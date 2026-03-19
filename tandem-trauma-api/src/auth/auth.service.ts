@@ -10,7 +10,6 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { AuthResponseDto } from './dto/auth-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +19,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(dto: RegisterDto): Promise<AuthResponseDto> {
+  async register(dto: RegisterDto): Promise<User> {
     const existing = await this.usersRepository.findOneBy({ email: dto.email });
     if (existing) {
       throw new BadRequestException({
@@ -38,12 +37,10 @@ export class AuthService {
       passwordHash: hashedPassword,
     });
 
-    await this.usersRepository.save(user);
-
-    return this.generateAuthResponse(user, 'User registered successfully');
+    return await this.usersRepository.save(user);
   }
 
-  async login(dto: LoginDto): Promise<AuthResponseDto> {
+  async login(dto: LoginDto) {
     const user = await this.usersRepository
       .createQueryBuilder('user')
       .addSelect('user.passwordHash') // since hash is hidden within api, getting passhash
@@ -56,23 +53,14 @@ export class AuthService {
         message: 'Invalid email or password',
       });
     }
-
-    return this.generateAuthResponse(user, 'Login successful');
-  }
-
-  private async generateAuthResponse(user: User, message: string) {
     const payload = { sub: user.id, email: user.email };
     return {
-      success: true,
-      message,
-      data: {
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        },
-        access_token: await this.jwtService.signAsync(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
       },
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 }

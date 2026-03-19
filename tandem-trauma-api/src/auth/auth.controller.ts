@@ -3,7 +3,6 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { AuthResponseDto } from './dto/auth-response.dto';
 
 @ApiTags('auth')
 @Controller('api/auth')
@@ -15,7 +14,6 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'User registered successfully',
-    type: AuthResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Validation error' })
   register(@Body() dto: RegisterDto) {
@@ -27,7 +25,6 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'User logged in successfully',
-    type: AuthResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Validation error' })
   login(@Body() dto: LoginDto) {
