@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -10,12 +11,13 @@ import { User } from './users/user.entity';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      username: 'admin',
-      password: '12345',
-      database: 'tandem_trauma_db',
+      username: '',
+      password: '',
+      database: 'postgres', //tandem-trauma-db
       entities: [User],
-      synchronize: true, // set to false in prod
+      synchronize: false, // set to false in prod
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
