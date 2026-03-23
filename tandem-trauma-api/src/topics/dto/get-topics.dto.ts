@@ -1,24 +1,9 @@
-import { IsOptional, IsPositive, Max, IsString, IsInt } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger'
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
-export class GetTopicsDto {
-    @ApiPropertyOptional({ example: 10, default: 10 })
-    @IsOptional()
-    @IsPositive()
-    @IsInt()
-    @Max(50)
-    @Type(() => Number)
-    limit?: number;
-
-    @ApiPropertyOptional({ example: 1, default: 1 })
-    @IsOptional()
-    @IsPositive()
-    @IsInt()
-    @Type(() => Number)
-    page?: number;
-
-    @ApiPropertyOptional()
+export class GetTopicsDto extends PaginationDto {
+    @ApiPropertyOptional({ example: 'javascript' })
     @IsString()
     @IsOptional()
     search: string | undefined;

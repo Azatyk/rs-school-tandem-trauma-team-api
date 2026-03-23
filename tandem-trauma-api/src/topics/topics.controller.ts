@@ -12,7 +12,7 @@ export class TopicsController {
     @Get()
     @ApiOperation({ summary: 'Get all topics' })
     findAll(@Query() dto: GetTopicsDto) {
-      return this.topicsService.findAll(dto)
+        return this.topicsService.findAll(dto)
     }
 
     @Get(':id')

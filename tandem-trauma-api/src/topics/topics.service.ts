@@ -9,7 +9,7 @@ import { CreateTopicDto } from './dto/create-topic.dto';
 export class TopicsService {
     constructor(
         @InjectRepository(Topic)
-        private readonly topicsRepository: Repository<Topic>,
+        private readonly topicsRepository: Repository<Topic>
     ) {}
 
     async findAll(dto: GetTopicsDto): Promise<{ data: Topic[], total: number, page: number, limit: number }> {
