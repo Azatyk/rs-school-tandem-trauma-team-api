@@ -15,7 +15,6 @@ export class QuestionsController {
         return this.questionsService.findAll(dto)
     }
 
-
     @Get(':id')
     @ApiOperation({ summary: 'Get one question' })
     findOne(@Param('id', ParseUUIDPipe) id: string) {

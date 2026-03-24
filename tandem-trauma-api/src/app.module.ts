@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { TopicsModule } from './topics/topics.module';
 import { QuestionsModule } from './questions/questions.module';
 import { AiModule } from './ai/ai.module';
+import { UserAnswersModule } from './user-answers/user-answers.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { AiModule } from './ai/ai.module';
     AuthModule,
     TopicsModule,
     QuestionsModule,
-    AiModule
+    AiModule,
+    UserAnswersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

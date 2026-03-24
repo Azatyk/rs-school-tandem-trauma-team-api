@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/common/base.entity';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { UserAnswer } from 'src/user-answers/entities/user-answer.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -14,4 +15,7 @@ export class User extends BaseEntity {
 
   @Column({ name: 'password_hash', select: false })
   passwordHash: string;
+
+  @OneToMany(() => UserAnswer, (userAnswer) => userAnswer.user)
+  userAnswers: UserAnswer[];
 }

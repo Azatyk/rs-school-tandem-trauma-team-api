@@ -14,7 +14,7 @@ export class CreateQuestionDto {
     @IsString()
     @MinLength(10, { message: 'Golden answer should have at least 10 characters' })
     @MaxLength(2500, { message: 'Golden answer should not have more than 2500 characters' })
-    golden_answer: string
+    golden_answer: string;
 
 
     @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
