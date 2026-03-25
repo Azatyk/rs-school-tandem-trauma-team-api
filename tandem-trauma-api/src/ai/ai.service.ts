@@ -40,7 +40,6 @@ export class AiService {
 
         try {
             const text = result.response.text();
-            console.log('AI raw response:', text);
             return JSON.parse(text);
         } catch (error) {
             throw new Error('AI returned invalid response format');

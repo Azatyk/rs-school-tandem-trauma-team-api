@@ -68,7 +68,8 @@ export class UserAnswersService {
             savedAnswer.status = AnswerStatus.SUCCESS;
             savedAnswer.evaluated_at = new Date();
         } catch (error) {
-            savedAnswer.status = AnswerStatus.ERROR;
+               console.error('AI parse error:', error);
+               throw new Error('AI returned invalid response format');
         }
 
         return this.userAnswersRepository.save(savedAnswer);

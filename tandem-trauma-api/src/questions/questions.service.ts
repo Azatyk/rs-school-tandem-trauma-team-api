@@ -42,8 +42,12 @@ export class QuestionsService {
     }
 
     async create(dto: CreateQuestionDto): Promise<Question> {
-        await this.topicsService.findOne(dto.topicId)
-        const question = this.questionsRepository.create(dto);
+        await this.topicsService.findOne(dto.topicId);
+        const question = this.questionsRepository.create({
+            theoretical_question: dto.theoretical_question,
+            golden_answer: dto.golden_answer,
+            topic: { id: dto.topicId }
+        });
         return this.questionsRepository.save(question);
     }
 }
