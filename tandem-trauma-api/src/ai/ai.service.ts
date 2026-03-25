@@ -12,7 +12,7 @@ export class AiService {
             throw new Error('GEMINI_API_KEY is not defined in environment variables');
         }
         const genAI = new GoogleGenerativeAI(apiKey);
-        this.model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+        this.model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     }
 
     async evaluateAnswer(question: string, goldenAnswer: string, userAnswer: string) {
@@ -40,6 +40,7 @@ export class AiService {
 
         try {
             const text = result.response.text();
+            console.log('AI raw response:', text);
             return JSON.parse(text);
         } catch (error) {
             throw new Error('AI returned invalid response format');
