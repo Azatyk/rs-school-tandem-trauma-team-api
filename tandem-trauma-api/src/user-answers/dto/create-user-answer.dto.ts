@@ -13,10 +13,4 @@ export class CreateUserAnswerDto {
     @MinLength(20, { message: 'Answer should have at least 20 characters' })
     @MaxLength(3000, { message: 'Answer should not exceed 3000 characters' })
     answerText: string;
-
-    // remove when JWT guard is implemented, @CurrentUser() instead
-    @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
-    @IsNotEmpty()
-    @IsUUID()
-    userId: string;
 }

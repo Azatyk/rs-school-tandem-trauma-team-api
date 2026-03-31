@@ -2,11 +2,14 @@ import { CreateUserAnswerDto } from "./dto/create-user-answer.dto";
 import { GetUserAnswersDto } from "./dto/get-user-answers.dto";
 import { UserAnswer } from "./entities/user-answer.entity";
 import { UserAnswersService } from "./user-answers.service";
-import { Controller, Get, Post, Body, Query, Param, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @ApiTags('user-answers')
 @Controller('user-answers')
+@UseGuards(JwtAuthGuard)
 export class UserAnswersController {
     constructor(private readonly userAnswersService: UserAnswersService) {}
 
@@ -88,7 +91,10 @@ export class UserAnswersController {
             }
         }
     })
-    create(@Body() dto: CreateUserAnswerDto) {
-        return this.userAnswersService.create(dto)
+    create(
+        @Body() dto: CreateUserAnswerDto,
+        @CurrentUser('userId') userId: string
+    ) {
+        return this.userAnswersService.create(dto, userId)
     }
 }

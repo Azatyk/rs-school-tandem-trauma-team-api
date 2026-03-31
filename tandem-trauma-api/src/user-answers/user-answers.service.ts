@@ -44,13 +44,13 @@ export class UserAnswersService {
         return answer;
     }
 
-    async create(dto: CreateUserAnswerDto): Promise<UserAnswer> {
+    async create(dto: CreateUserAnswerDto, userId: string): Promise<UserAnswer> {
 
         const question = await this.questionsService.findOne(dto.questionId);
 
         const answer = this.userAnswersRepository.create({
             answer_text: dto.answerText,
-            user: { id: dto.userId },
+            user: { id: userId },
             question: { id: dto.questionId },
             status: AnswerStatus.PENDING
         });
