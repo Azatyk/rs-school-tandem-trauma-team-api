@@ -15,12 +15,12 @@ export class QuestionsService {
     ) {}
 
     async findAll(dto: GetQuestionsDto): Promise<{ data: Question[], total: number, page: number, limit: number }> {
-        const { page = 1, limit = 10, search, topicId } = dto;
+        const { page = 1, limit = 10, search, topic_id } = dto;
 
 
         const [data, total] = await this.questionsRepository.findAndCount({
            where: {
-                ...(topicId && { topic: { id: topicId } }),
+                ...(topic_id && { topic: { id: topic_id } }),
                 ...(search && { theoretical_question: ILike(`%${search}%`) }),
             },
             take: limit,
@@ -42,11 +42,11 @@ export class QuestionsService {
     }
 
     async create(dto: CreateQuestionDto): Promise<Question> {
-        await this.topicsService.findOne(dto.topicId);
+        await this.topicsService.findOne(dto.topic_id);
         const question = this.questionsRepository.create({
             theoretical_question: dto.theoretical_question,
             golden_answer: dto.golden_answer,
-            topic: { id: dto.topicId }
+            topic: { id: dto.topic_id }
         });
         return this.questionsRepository.save(question);
     }
