@@ -1,7 +1,7 @@
 import { BaseEntity } from "src/common/base.entity";
 import { Topic } from "src/topics/entities/topic.entity";
 import { Exclude } from 'class-transformer';
-import { Entity,PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
+import { Entity,PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
 import { UserAnswer } from "src/user-answers/entities/user-answer.entity";
 
 @Entity('questions')
@@ -20,5 +20,6 @@ export class Question extends BaseEntity {
     userAnswers: UserAnswer[];
 
     @ManyToOne(() => Topic, (topic) => topic.questions)
+    @JoinColumn({ name: 'topic_id' })
     topic: Topic
 }
