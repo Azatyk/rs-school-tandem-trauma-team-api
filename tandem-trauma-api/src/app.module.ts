@@ -26,6 +26,8 @@ import { UserAnswersModule } from './user-answers/user-answers.module';
         database: config.get('DB_NAME'),
         autoLoadEntities: true,
         synchronize: false,
+        migrations: [__dirname + '/../migrations/*{.ts,.js}'],
+        migrationsRun: true,
       }),
     }),
     AuthModule,

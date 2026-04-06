@@ -3,10 +3,11 @@ import { GetUserAnswersDto } from "./dto/get-user-answers.dto";
 import { UserAnswer } from "./entities/user-answer.entity";
 import { UserAnswersService } from "./user-answers.service";
 import { Controller, Get, Post, Body, Query, Param, ParseUUIDPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
+@ApiBearerAuth()
 @ApiTags('user-answers')
 @Controller('user-answers')
 @UseGuards(JwtAuthGuard)
