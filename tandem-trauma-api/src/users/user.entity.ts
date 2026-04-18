@@ -5,17 +5,17 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 @Entity('users')
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ name: 'password_hash', select: false })
-  passwordHash: string;
+  passwordHash!: string;
 
   @OneToMany(() => UserAnswer, (userAnswer) => userAnswer.user)
-  userAnswers: UserAnswer[];
+  userAnswers!: UserAnswer[];
 }

@@ -6,5 +6,5 @@ export class GetTopicsDto extends PaginationDto {
     @ApiPropertyOptional({ example: 'javascript' })
     @IsString()
     @IsOptional()
-    search: string | undefined;
+    search?: string;
 }
