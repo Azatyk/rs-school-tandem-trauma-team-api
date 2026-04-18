@@ -5,14 +5,14 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 @Entity('topics')
 export class Topic extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  title: string;
+  title!: string;
 
   @Column({ nullable: true, type: 'text' })
-  description: string | null;
+  description!: string | null;
 
   @OneToMany(() => Question, (question) => question.topic)
-  questions: Question[];
+  questions!: Question[];
 }

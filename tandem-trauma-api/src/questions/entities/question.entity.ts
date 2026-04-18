@@ -7,19 +7,19 @@ import { UserAnswer } from "src/user-answers/entities/user-answer.entity";
 @Entity('questions')
 export class Question extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({ type: 'text' })
-    theoretical_question: string;
+    theoretical_question!: string;
 
     @Exclude()
     @Column({ type: 'text' })
-    golden_answer: string;
+    golden_answer!: string;
 
     @OneToMany(() => UserAnswer, (userAnswer) => userAnswer.question)
-    userAnswers: UserAnswer[];
+    userAnswers!: UserAnswer[];
 
     @ManyToOne(() => Topic, (topic) => topic.questions)
     @JoinColumn({ name: 'topic_id' })
-    topic: Topic
+    topic!: Topic
 }

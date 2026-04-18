@@ -121,6 +121,16 @@ Question: ${question}
 Golden Answer: ${goldenAnswer}
 User Answer: ${userAnswer}
 
+Scoring rules:
+- Return an integer score from 0 to 10
+- 10 means the answer is excellent, fully correct, complete, and clearly explained
+- 8-9 means strong answer with only small omissions
+- 6-7 means mostly correct but missing important details
+- 3-5 means partially correct, shallow, or noticeably incomplete
+- 1-2 means largely incorrect
+- 0 means empty, irrelevant, or completely wrong
+- If the answer is described as excellent, perfect, exceptionally accurate, or having no significant weaknesses, the score should be 9 or 10, not 5
+
 Respond ONLY with valid JSON, no markdown, no extra text:
 {
   "score": 0,
