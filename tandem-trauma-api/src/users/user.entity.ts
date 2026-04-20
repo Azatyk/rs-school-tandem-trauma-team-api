@@ -16,6 +16,16 @@ export class User extends BaseEntity {
   @Column({ name: 'password_hash', select: false })
   passwordHash!: string;
 
+  @Column({ name: 'current_streak', type: 'int', default: 0 })
+  currentStreak!: number;
+
+  @Column({ name: 'longest_streak', type: 'int', default: 0 })
+  longestStreak!: number;
+
+  // Stored as DATE to avoid timezone edge cases.
+  @Column({ name: 'last_active_date', type: 'date', nullable: true })
+  lastActiveDate!: string | null;
+
   @OneToMany(() => UserAnswer, (userAnswer) => userAnswer.user)
   userAnswers!: UserAnswer[];
 }
