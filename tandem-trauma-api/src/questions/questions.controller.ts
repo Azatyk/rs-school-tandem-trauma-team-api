@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Query, Param, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { QuestionsService } from "./questions.service";
 import { GetQuestionsDto } from "./dto/get-questions.dto";
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -12,22 +12,53 @@ export class QuestionsController {
 
     @Get()
     @ApiOperation({ summary: 'Get all questions' })
+    @ApiQuery({
+        name: 'topic_id',
+        required: false,
+        description: 'Filter questions by topic id',
+        example: '8ad7213c-38e4-4828-a9b9-3afc0d1c02b2',
+    })
+    @ApiQuery({
+        name: 'difficulty',
+        required: false,
+        description: 'Filter questions by difficulty level',
+        enum: ['easy', 'medium', 'hard'],
+        example: 'medium',
+    })
+    @ApiQuery({
+        name: 'search',
+        required: false,
+        description: 'Optional text search against the question text',
+        example: 'typescript',
+    })
+    @ApiQuery({
+        name: 'page',
+        required: false,
+        description: 'Page number for pagination',
+        example: 1,
+    })
+    @ApiQuery({
+        name: 'limit',
+        required: false,
+        description: 'Number of questions per page',
+        example: 10,
+    })
     @ApiResponse({
         status: 200,
         description: 'Returns paginated list of questions',
         schema: {
             example: {
                 data: [{
-                    id: '123e4567-e89b-12d3-a456-426614174000',
-                    theoretical_question: 'What is event loop in JavaScript?',
-                    difficulty: 'medium',
+                    id: '2c19d7fd-0fc5-4eab-a985-6482216194bb',
+                    theoretical_question: 'Explain how TypeScript type narrowing works with union types and type guards.',
+                    difficulty: 'easy',
                     topic: {
-                        id: '123e4567-e89b-12d3-a456-426614174000',
-                        title: 'JavaScript',
-                        description: 'Core JavaScript concepts'
+                        id: '8ad7213c-38e4-4828-a9b9-3afc0d1c02b2',
+                        title: 'TypeScript',
+                        description: 'Static typing, interfaces, generics and type safety in JS'
                     }
                 }],
-                total: 50,
+                total: 17,
                 page: 1,
                 limit: 10
             }
@@ -43,7 +74,18 @@ export class QuestionsController {
     @ApiResponse({
         status: 200,
         description: 'Returns single question',
-        type: Question
+        schema: {
+            example: {
+                id: '2c19d7fd-0fc5-4eab-a985-6482216194bb',
+                theoretical_question: 'Explain how TypeScript type narrowing works with union types and type guards.',
+                difficulty: 'easy',
+                topic: {
+                    id: '8ad7213c-38e4-4828-a9b9-3afc0d1c02b2',
+                    title: 'TypeScript',
+                    description: 'Static typing, interfaces, generics and type safety in JS'
+                }
+            }
+        }
     })
     @ApiResponse({
         status: 404,

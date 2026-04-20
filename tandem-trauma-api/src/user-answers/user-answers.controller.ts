@@ -3,7 +3,7 @@ import { GetUserAnswersDto } from "./dto/get-user-answers.dto";
 import { UserAnswer } from "./entities/user-answer.entity";
 import { UserAnswersService } from "./user-answers.service";
 import { Controller, Get, Post, Body, Query, Param, ParseUUIDPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
@@ -16,21 +16,56 @@ export class UserAnswersController {
 
     @Get()
     @ApiOperation({ summary: 'Get all user answers' })
+    @ApiQuery({
+        name: 'questionId',
+        required: false,
+        description: 'Filter answers by question id',
+        example: '2c19d7fd-0fc5-4eab-a985-6482216194bb',
+    })
+    @ApiQuery({
+        name: 'userId',
+        required: false,
+        description: 'Filter answers by user id',
+        example: '123e4567-e89b-12d3-a456-426614174000',
+    })
+    @ApiQuery({
+        name: 'status',
+        required: false,
+        description: 'Filter answers by AI evaluation status',
+        enum: ['pending', 'success', 'error'],
+        example: 'success',
+    })
+    @ApiQuery({
+        name: 'page',
+        required: false,
+        description: 'Page number for pagination',
+        example: 1,
+    })
+    @ApiQuery({
+        name: 'limit',
+        required: false,
+        description: 'Number of answers per page',
+        example: 10,
+    })
     @ApiResponse({
         status: 200,
         description: 'Returns paginated list of user answers',
         schema: {
             example: {
                 data: [{
-                    id: '123e4567-e89b-12d3-a456-426614174000',
-                    answer_text: 'Event loop is...',
-                    ai_score: 8.5,
-                    ai_feedback: { strengths: '...', weaknesses: '...', accuracy: '...' },
-                    ai_advice: 'Focus on...',
+                    id: '0f8d572d-93ff-4be0-8e71-0fa7fcfc5257',
+                    answer_text: 'Type narrowing lets TypeScript reduce a union to a more specific type based on checks like typeof, in, equality checks, or custom type guards.',
+                    ai_score: 9,
+                    ai_feedback: {
+                        strengths: 'Clear explanation of how type narrowing works with practical examples of guards.',
+                        weaknesses: 'Could mention discriminated unions explicitly.',
+                        accuracy: 'Technically accurate and aligned with the expected answer.'
+                    },
+                    ai_advice: 'Add one short example using a discriminated union to make the answer even stronger.',
                     status: 'success',
-                    evaluated_at: '2026-03-25T09:07:59.097Z',
+                    evaluated_at: '2026-04-20T14:12:59.097Z',
                 }],
-                total: 100,
+                total: 12,
                 page: 1,
                 limit: 10,
             }
@@ -68,7 +103,21 @@ export class UserAnswersController {
     @ApiResponse({
         status: 201,
         description: 'Answer created and evaluated by AI',
-        type: UserAnswer
+        schema: {
+            example: {
+                id: '0f8d572d-93ff-4be0-8e71-0fa7fcfc5257',
+                answer_text: 'Type narrowing lets TypeScript reduce a union to a more specific type based on checks like typeof, in, equality checks, or custom type guards.',
+                ai_score: 9,
+                ai_feedback: {
+                    strengths: 'Clear explanation of how type narrowing works with practical examples of guards.',
+                    weaknesses: 'Could mention discriminated unions explicitly.',
+                    accuracy: 'Technically accurate and aligned with the expected answer.'
+                },
+                ai_advice: 'Add one short example using a discriminated union to make the answer even stronger.',
+                status: 'success',
+                evaluated_at: '2026-04-20T14:12:59.097Z'
+            }
+        }
     })
     @ApiResponse({
         status: 400,
