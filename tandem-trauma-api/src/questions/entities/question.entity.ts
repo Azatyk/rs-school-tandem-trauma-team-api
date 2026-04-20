@@ -4,6 +4,12 @@ import { Exclude } from 'class-transformer';
 import { Entity,PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
 import { UserAnswer } from "src/user-answers/entities/user-answer.entity";
 
+export enum QuestionDifficulty {
+    EASY = 'easy',
+    MEDIUM = 'medium',
+    HARD = 'hard',
+}
+
 @Entity('questions')
 export class Question extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
@@ -15,6 +21,13 @@ export class Question extends BaseEntity {
     @Exclude()
     @Column({ type: 'text' })
     golden_answer!: string;
+
+    @Column({
+        type: 'enum',
+        enum: QuestionDifficulty,
+        default: QuestionDifficulty.MEDIUM,
+    })
+    difficulty!: QuestionDifficulty;
 
     @OneToMany(() => UserAnswer, (userAnswer) => userAnswer.question)
     userAnswers!: UserAnswer[];

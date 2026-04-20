@@ -1,0 +1,726 @@
+{
+  "language": "Frontend",
+  "questionsPerTopic": 17,
+  "topics": [
+    {
+      "topic": "TypeScript",
+      "questions": [
+        {
+          "question": "Define an interface for a User object with id (number), name (string), and an optional email (string). Show an example of creating a User variable.",
+          "goldenAnswer": "interface User { id: number; name: string; email?: string; } const user: User = { id: 1, name: 'Alice' };",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Write a generic function that takes a value of type T and a length, and returns an array of T with that length.",
+          "goldenAnswer": "function createArray<T>(item: T, length: number): T[] { return Array(length).fill(item); }",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Explain the difference between the 'any' and 'unknown' types, and give a safe usage example of 'unknown'.",
+          "goldenAnswer": "'any' bypasses type checking, 'unknown' requires narrowing. Example: function log(value: unknown) { if (typeof value === 'string') console.log(value); }",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Create a type that ensures an object has at least one of the properties 'a' or 'b', but not necessarily both.",
+          "goldenAnswer": "type OneOf = { a?: string; b?: string; } & ( { a: string; } | { b: string; } );",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Show how to use TypeScript's ReturnType utility to infer the return type of a function.",
+          "goldenAnswer": "function getName() { return 'John'; } type NameType = ReturnType<typeof getName>; // string",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Explain how to use a generic type to create a function that accepts an array of any type and returns the first element. Provide an example.",
+          "goldenAnswer": "Use a generic type parameter T: `function first<T>(arr: T[]): T { return arr[0]; }` – the compiler infers T from the argument.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you enforce that an object conforms to an interface that includes optional properties and index signatures? Provide code.",
+          "goldenAnswer": "Define the interface with optional props and an index signature: `interface Config { timeout?: number; [key: string]: string | number; }` – objects must match this shape.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Describe how to use type intersection to combine two interfaces and then create a variable that satisfies both. Provide an example.",
+          "goldenAnswer": "Use `&`: `interface A { a: number; } interface B { b: string; } type AB = A & B; const obj: AB = { a: 1, b: 'x' };`.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the difference between type alias and interface when extending? Provide a scenario where one is preferable.",
+          "goldenAnswer": "Interfaces can be merged across declarations; type aliases cannot. Prefer interface when you need declaration merging, e.g., extending React props.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you create a mapped type that makes all properties of a given type optional except one? Provide an example.",
+          "goldenAnswer": "Use `Partial<T> & Pick<T, K>`: `type PartialExcept<T, K extends keyof T> = Partial<T> & Pick<T, K>;` – makes all optional except keys K.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how to use conditional types to extract the return type of a function type. Provide an example.",
+          "goldenAnswer": "Use `ReturnType<T>`: `type R = ReturnType<() => string>; // R is string` – built‑in conditional type.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you enforce that a function parameter type is a subtype of a specific interface but not a supertype? Provide an example.",
+          "goldenAnswer": "Use generic constraint with `extends`: `function log<T extends Base>(x: T) {}` – T must be at least Base, not a supertype.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Describe how to use the `unknown` type to safely handle values from an external API and then narrow them to a specific type. Provide an example.",
+          "goldenAnswer": "Assign to `unknown`, then narrow: `let data: unknown = fetch(); if (typeof data === 'object' && data !== null && 'id' in data) { const user = data as { id: number }; }`.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you design a discriminated union type for a form state that can be in 'idle', 'loading', 'success', or 'error' states, and enforce exhaustive checking in a switch statement?",
+          "goldenAnswer": "Define a union of interfaces each with a unique literal type for the `status` field. In the switch, include a `default` case that assigns the variable to `never`. This forces the compiler to error if a new state is added without handling it.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "How would you write a generic merge function that combines two objects, preserving the more specific type of overlapping keys from the second object? Provide the type signature and explain the type logic.",
+          "goldenAnswer": "Use a generic signature: `function merge<T, U>(a: T, b: U): T & Omit<U, keyof T> & Pick<U, keyof T>`; this keeps `b`’s types for overlapping keys and retains `a`’s types for unique keys.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Create a conditional type that extracts the underlying type from a function that may return a Promise or a direct value. How can this be used in a utility type?",
+          "goldenAnswer": "`type Unwrap<T> = T extends (...args:any)=>infer R ? R extends Promise<infer U> ? U : R : never;` This can be used to type the result of async utilities that accept either sync or async callbacks.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "How can you use mapped types and `keyof` to build a utility type that makes all properties of a type optional except those marked with a custom `@required` decorator, and enforce this at compile time?",
+          "goldenAnswer": "Define a helper `RequiredProps<T> = { [K in keyof T]-?: T[K] extends { __required__: true } ? T[K] : never }` and then `type OptionalExcept<T> = Partial<Omit<T, keyof RequiredProps<T>>> & RequiredProps<T>;` This ensures only decorated keys are required.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "topic": "DOM Manipulation",
+      "questions": [
+        {
+          "question": "How do you select an element with id \"header\" and change its text content to \"Welcome\" using vanilla JS?",
+          "goldenAnswer": "Use document.getElementById('header').textContent = 'Welcome';",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How can you add a new <li> item with text \"New Item\" to an unordered list with class \"menu\"?",
+          "goldenAnswer": "const ul = document.querySelector('.menu'); const li = document.createElement('li'); li.textContent = 'New Item'; ul.appendChild(li);",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What method would you use to remove the last child element from a div with id \"container\"?",
+          "goldenAnswer": "const container = document.getElementById('container'); container.removeChild(container.lastElementChild);",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How can you toggle a CSS class \"active\" on a button when it is clicked?",
+          "goldenAnswer": "button.addEventListener('click', () => button.classList.toggle('active'));",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you find all elements with data attribute data-role=\"item\" and change their background color to yellow?",
+          "goldenAnswer": "const items = document.querySelectorAll('[data-role=\"item\"]'); items.forEach(el => el.style.backgroundColor = 'yellow');",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How can you efficiently toggle a CSS class on all elements that have a specific data attribute, e.g. `data-toggle=\"true\"`?",
+          "goldenAnswer": "Use `document.querySelectorAll('[data-toggle=\"true\"]')` to get a static NodeList, then loop with `forEach` and call `classList.toggle('active')` on each element. This avoids repeated DOM queries and works in a single pass.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the difference between `querySelectorAll` and `getElementsByClassName` regarding live collections and performance?",
+          "goldenAnswer": "`getElementsByClassName` returns a live HTMLCollection that updates automatically when the DOM changes, which can incur overhead. `querySelectorAll` returns a static NodeList, so it’s faster for one‑time queries and safer when you don’t need live updates.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Given a deeply nested `<ul>`/`<li>` structure, write a function that returns the maximum depth of nested `<li>` elements.",
+          "goldenAnswer": "Recursively traverse children: `function depth(node){let max=0;node.children.forEach(child=>{if(child.tagName==='LI'){max=Math.max(max,1+depth(child));}});return max;}` Call `depth(document.querySelector('ul'))`.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you remove all child nodes from a container element without causing layout thrashing?",
+          "goldenAnswer": "Replace the container’s content with an empty fragment: `const parent=document.getElementById('container'); const frag=document.createDocumentFragment(); parent.replaceWith(frag);` or set `parent.innerHTML=''` which is a single operation and avoids multiple reflows.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how to use event delegation to handle clicks on buttons that are added dynamically to a parent container.",
+          "goldenAnswer": "Attach a single click listener to the parent: `parent.addEventListener('click',e=>{if(e.target.matches('.dynamic-btn')){handle(e.target);}});` This captures events from any child, even those added later, and keeps listener count low.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Write a function that moves an element from one parent to another while preserving its event listeners.",
+          "goldenAnswer": "Use `element.cloneNode(true)` to clone with listeners, append to new parent, then remove the original: `const clone=element.cloneNode(true); newParent.appendChild(clone); element.remove();` This keeps listeners intact.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How do you use `IntersectionObserver` to lazy‑load images? Provide a minimal example.",
+          "goldenAnswer": "Create an observer: `const obs=new IntersectionObserver((entries,obs)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.src=e.target.dataset.src;obs.unobserve(e.target);}})});` Then observe each image: `document.querySelectorAll('img[data-src]').forEach(img=>obs.observe(img));`",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you detect when a specific element becomes visible in the viewport and trigger an animation only once?",
+          "goldenAnswer": "Use `IntersectionObserver` with `threshold:1.0` and a flag: `let animated=false; const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting && !animated){e.target.classList.add('animate');animated=true;obs.unobserve(e.target);}})}); obs.observe(targetElement);`",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you efficiently remove all event listeners from a large subtree without iterating over each element?",
+          "goldenAnswer": "Clone the subtree and replace the original node with the clone. The clone has no listeners, and the operation is handled by the browser in O(1) time. Trade‑offs: you lose node identity, any bound state, and must re‑attach any necessary references.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Describe a strategy to implement a virtual‑DOM diffing algorithm that minimizes reflows when updating a deeply nested component tree.",
+          "goldenAnswer": "Use a keyed tree and shallow‑compare props to stop diffing unchanged subtrees. Batch all DOM writes into a single transaction, schedule the update with requestAnimationFrame, and apply style changes in one pass to avoid layout thrashing.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Explain how to handle dynamic insertion of elements that need to be part of an existing CSS grid layout, ensuring minimal layout thrashing.",
+          "goldenAnswer": "Create the element, set its grid‑area or order, append it to the grid container, then force a single layout read (e.g., offsetHeight) inside a requestAnimationFrame callback. This groups all writes and reads, preventing multiple reflows.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Discuss how to implement a custom element that observes changes to its attributes and updates its shadow DOM accordingly, ensuring that updates are batched to avoid excessive reflows.",
+          "goldenAnswer": "Define observedAttributes, queue attribute changes in attributeChangedCallback, and in a requestAnimationFrame flush the queue to update the shadow DOM once. This batches writes and avoids repeated reflows.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "topic": "Async JavaScript",
+      "questions": [
+        {
+          "question": "How do you create a promise that resolves after 2 seconds?",
+          "goldenAnswer": "Use new Promise((resolve)=>setTimeout(()=>resolve(),2000));",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is the difference between .then() and async/await syntax?",
+          "goldenAnswer": "Both handle promise resolution; .then() uses callbacks, async/await allows linear syntax and try/catch for errors.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How can you catch errors in an async function?",
+          "goldenAnswer": "Wrap await calls in try/catch or use .catch() on the returned promise.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Explain the order of execution between microtasks and macrotasks in the event loop.",
+          "goldenAnswer": "Microtasks (e.g., promise callbacks) run after the current stack and before the next macrotask; macrotasks like setTimeout run after microtasks.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What will console.log output for the following code? Promise.resolve().then(()=>console.log('a')).then(()=>console.log('b')); console.log('c');",
+          "goldenAnswer": "It logs 'c', then 'a', then 'b'.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Explain the difference between microtasks and macrotasks in the event loop and give an example where the order of execution matters.",
+          "goldenAnswer": "Microtasks (e.g., Promise callbacks, MutationObserver) run immediately after the current stack and before the next rendering. Macrotasks (e.g., setTimeout, I/O) run after microtasks. Example: Promise.resolve().then(()=>console.log('micro')).setTimeout(()=>console.log('macro'),0); prints micro then macro.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Given a function that returns a promise, how would you handle errors without using .catch()? Provide a code snippet.",
+          "goldenAnswer": "Use try/catch with async/await: async function foo(){ try{ await asyncFunc(); } catch(err){ console.error(err); } }",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Describe how async/await transforms a promise chain. Convert the following .then chain to async/await: fetch(url).then(r=>r.json()).then(data=>process(data)).catch(err=>handle(err));",
+          "goldenAnswer": "async function load(){ try{ const r=await fetch(url); const data=await r.json(); process(data); } catch(err){ handle(err); } }",
+          "difficulty": "medium"
+        },
+        {
+          "question": "In what scenario would you use Promise.allSettled? Provide an example.",
+          "goldenAnswer": "When you want to wait for all promises to finish regardless of rejection, e.g., Promise.allSettled([p1,p2]).then(results=>results.forEach(r=>{ if(r.status==='fulfilled') use(r.value); else log(r.reason); }));",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how to cancel a promise or abort an async operation. Provide an example using AbortController.",
+          "goldenAnswer": "Create AbortController, pass signal to fetch: const controller=new AbortController(); fetch(url,{signal:controller.signal}); controller.abort(); The promise rejects with DOMException 'AbortError'.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Given a loop that creates promises inside, explain potential pitfalls with closures and how to avoid them.",
+          "goldenAnswer": "Using var in loop causes same reference; use let or IIFE: for(let i=0;i<3;i++){ promises.push(asyncFunc(i)); } ensures each promise gets correct i.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain the concept of \"promise race\" and how Promise.race behaves when one promise rejects. Provide an example.",
+          "goldenAnswer": "Promise.race resolves or rejects as soon as any input settles. If the first settled promise rejects, the returned promise rejects: Promise.race([Promise.reject('err'), Promise.resolve('ok')]).catch(e=>console.log(e)); // 'err'.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Describe how microtasks are scheduled when using setTimeout inside a promise resolution. Provide an example of the order of execution.",
+          "goldenAnswer": "Promise resolution schedules its .then as a microtask. setTimeout schedules a macrotask. Example: Promise.resolve().then(()=>setTimeout(()=>console.log('macro'),0)); console.log('sync'); // prints sync, then microtask (none), then macro.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how the event loop handles microtasks vs macrotasks, and describe a scenario where a promise chain inside a setTimeout leads to unexpected ordering. Provide a code snippet and explain.",
+          "goldenAnswer": "Microtasks (Promise callbacks, MutationObserver) run immediately after the current stack and before the next macrotask. Macrotasks (setTimeout, setImmediate, I/O) are queued after microtasks. In the snippet below, the promise resolves before the setTimeout callback, so its .then runs first:\n\n```js\nPromise.resolve().then(()=>console.log('micro'));\nsetTimeout(()=>console.log('macro'),0);\nconsole.log('sync');\n```\nOutput: sync, micro, macro. If you nest a promise inside setTimeout, the promise’s microtasks still run after the timeout callback but before the next macrotask, which can surprise developers expecting the promise to run before the timeout. Understanding this ordering is critical for deterministic async flows.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "In a large React application, you need to fetch data from multiple APIs concurrently and combine results. How would you structure async/await to handle partial failures, retries, and cancellation? Provide pseudo-code and discuss trade-offs.",
+          "goldenAnswer": "Use a helper that returns a promise with retry logic and cancellation token. Example:\n\n```js\nasync function fetchWithRetry(url, opts, retries=3){\n  for(let i=0;i<retries;i++){\n    try{ return await fetch(url,opts); }\n    catch(e){ if(i===retries-1) throw e; }\n  }\n}\n\nasync function loadAll(){\n  const controller = new AbortController();\n  const [a,b] = await Promise.all([\n    fetchWithRetry('/api/a',{signal:controller.signal}),\n    fetchWithRetry('/api/b',{signal:controller.signal})\n  ]).catch(err=>{ /* handle partial */ });\n  // combine a,b\n}\n```\n\nTrade‑offs: Promise.all fails fast; use Promise.allSettled for partial success. Cancellation via AbortController stops network requests but not already started promises. Retries increase latency but improve resilience.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Describe how you would implement a custom promise library that supports cancellation and progress reporting. What are the key design decisions and how would you integrate it with async/await?",
+          "goldenAnswer": "Create a Promise wrapper that accepts an executor with a cancel function and a progress callback. Store state (pending, fulfilled, rejected, cancelled). Expose a .cancel() method that sets a flag and rejects with a CancellationError. For progress, expose .onProgress(fn) that the executor calls. To integrate with async/await, provide a toPromise() that returns a native Promise, rejecting on cancellation. Key decisions: keep native Promise semantics for chaining, expose cancellation only via wrapper, ensure no memory leaks by cleaning listeners on settle.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Explain the difference between Promise.all, Promise.allSettled, and Promise.race in the context of error handling and resource cleanup. Provide a scenario where using Promise.race could lead to a memory leak, and how to mitigate it.",
+          "goldenAnswer": "Promise.all rejects immediately on first rejection, aborting all pending promises (no built‑in cancellation). Promise.allSettled waits for all, giving status of each, useful for cleanup. Promise.race resolves or rejects with the first settled promise, ignoring the rest; the ignored promises may still hold resources. Example: racing a long‑running fetch against a timeout: if the fetch never resolves, the timeout resolves first, but the fetch continues, leaking network bandwidth. Mitigation: use AbortController to cancel the fetch when the race resolves, or wrap the fetch in a promise that rejects on abort.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "topic": "Arrays and Objects",
+      "questions": [
+        {
+          "question": "How do you create a shallow copy of an array using spread syntax?",
+          "goldenAnswer": "Use [...originalArray] to create a new array with the same elements.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How can you extract the first two properties of an object into variables using destructuring?",
+          "goldenAnswer": "const { prop1, prop2 } = obj; // assigns the values of prop1 and prop2 to variables.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What method would you use to transform an array of numbers into an array of their squares?",
+          "goldenAnswer": "array.map(x => x * x) returns a new array of squares.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you merge two objects into a new object without mutating the originals?",
+          "goldenAnswer": "const merged = { ...obj1, ...obj2 }; creates a new object containing properties from both.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How can you filter an array to only include objects where a property 'active' is true?",
+          "goldenAnswer": "array.filter(item => item.active) returns a new array of active items.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Given an array of user objects, write a function that groups the users by their role using Array.reduce. The function should return an object where each key is a role and the value is an array of users with that role.",
+          "goldenAnswer": "function groupByRole(users){return users.reduce((acc,u)=>{(acc[u.role]=acc[u.role]||[]).push(u);return acc;},{});}",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Using destructuring, extract the first two elements of an array and assign the rest to a variable named `rest`. Provide the syntax.",
+          "goldenAnswer": "const [first, second, ...rest] = array;",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Show how to merge two objects `objA` and `objB` using the spread operator, ensuring that properties in `objB` overwrite those in `objA`. What is the resulting syntax?",
+          "goldenAnswer": "const merged = {...objA, ...objB};",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Transform an array of numbers `[10, 20, 30]` into an object `{0:10, 1:20, 2:30}` using Array.map and Object.fromEntries. Provide the code.",
+          "goldenAnswer": "const obj = Object.fromEntries(nums.map((v,i)=>[i,v]));",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Remove duplicate values from an array `[1,2,2,3,4,4]` using the spread operator and Set. What is the resulting array?",
+          "goldenAnswer": "const unique = [...new Set([1,2,2,3,4,4])]; // [1,2,3,4]",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Using Array.find, locate the first product in an array with a price greater than 100 and return its name. Provide the function signature and implementation.",
+          "goldenAnswer": "function findExpensiveProduct(products){const p=products.find(p=>p.price>100);return p?p.name:null;}",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Swap the values of two variables `a` and `b` using destructuring assignment. Show the syntax.",
+          "goldenAnswer": "[a,b] = [b,a];",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Compute the total price of items in a cart array where each item has a `price` and `quantity`, using Array.reduce. Provide the implementation.",
+          "goldenAnswer": "const total = cart.reduce((sum,item)=>sum+item.price*item.quantity,0);",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How would you efficiently find the longest contiguous subarray where the sum of its elements equals a target value, considering both positive and negative numbers, and explain the algorithmic complexity?",
+          "goldenAnswer": "Use a sliding window with a hash map to store cumulative sums. Iterate through the array, maintain current sum, and for each index check if currentSum - target exists in the map. If so, you found a subarray. Complexity O(n) time, O(n) space.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Describe how you would merge two deeply nested objects while preserving immutability, handling arrays, functions, and circular references without using external libraries.",
+          "goldenAnswer": "Implement a recursive deep merge that copies primitives and functions, concatenates arrays, and uses a WeakMap to track visited nodes to avoid cycles. For each key, if both values are plain objects, recurse; otherwise, overwrite. This keeps immutability and handles cycles.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Explain how you would transform a large array of objects into a lookup map keyed by a composite key derived from multiple fields, ensuring the operation is performant and memory efficient.",
+          "goldenAnswer": "Iterate once, building a Map. For each object, compute composite key (e.g., `${obj.a}-${obj.b}`) and set map.set(key, obj). This is O(n) time, O(n) space, and avoids nested loops or repeated filtering.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "In a React component, you need to update state based on a previous state that is an array of objects. What pitfalls should you avoid to prevent stale closures, and how would you correctly implement the update?",
+          "goldenAnswer": "Use the functional form of setState: setState(prev => prev.map(item => item.id===id ? {...item, ...updates} : item)). This ensures you always work with the latest state and avoids stale closures.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "topic": "ES6+ Features",
+      "questions": [
+        {
+          "question": "Write an arrow function that takes two numbers and returns their sum.",
+          "goldenAnswer": "const sum = (a, b) => a + b;",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you import a default export from a module named 'utils.js'?",
+          "goldenAnswer": "import utils from './utils.js';",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Use optional chaining to safely access the city property of a user object.",
+          "goldenAnswer": "const city = user?.address?.city;",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Convert the following function to an arrow function that logs \"Hello\":\nfunction greet() { console.log('Hello'); }",
+          "goldenAnswer": "const greet = () => console.log('Hello');",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Explain the difference between let and const in ES6.",
+          "goldenAnswer": "let declares a mutable variable; const declares a read‑only binding that must be initialized.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How does an arrow function differ from a traditional function in terms of the `this` keyword, and why is this useful when attaching event handlers in a class component?",
+          "goldenAnswer": "Arrow functions capture the surrounding lexical `this`, so inside the arrow the `this` refers to the class instance. This eliminates the need to bind the handler in the constructor or use `.bind(this)` when passing it to an event, ensuring the correct context.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how to use dynamic `import()` for code-splitting and how to handle a circular dependency that might arise when two modules import each other asynchronously.",
+          "goldenAnswer": "Use `import('./module').then(m => { /* use m */ })` to load a module on demand. For circular async imports, wrap the dependent code in a function or use a top-level await to ensure the module resolves before accessing the exported value, or restructure to break the cycle.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Show how to safely access a deeply nested property using optional chaining and provide a default value if any part of the chain is `null` or `undefined`.",
+          "goldenAnswer": "`const value = obj?.a?.b?.c ?? 'default';` The `?.` stops evaluation if a segment is missing, and `??` supplies the fallback only when the result is `null` or `undefined`.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the difference between using the spread operator on arrays versus objects, and what pitfalls should you avoid when merging arrays that contain duplicate elements?",
+          "goldenAnswer": "`[...arr1, ...arr2]` concatenates arrays; `{...obj1, ...obj2}` merges objects, with later keys overriding earlier ones. Duplicate array elements are preserved; if you need uniqueness, use a `Set` or filter after merging.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Demonstrate object destructuring with renaming and default values, and explain what happens if the source property is missing.",
+          "goldenAnswer": "`const { oldName: newName = 'fallback' } = source;` If `source.oldName` is `undefined`, `newName` gets `'fallback'`. If the property is absent, the default still applies.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can template literals be used to create multiline strings and embed expressions, and what is the advantage over traditional string concatenation?",
+          "goldenAnswer": "``const msg = `Hello ${name},\nWelcome to the platform!`;`` Template literals preserve line breaks and allow `${}` interpolation, making code cleaner and less error‑prone than concatenating with `+` and `\n`.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "When using `Promise.allSettled`, how can you process both fulfilled and rejected promises without throwing an error, and why might this be preferable to `Promise.all` in some scenarios?",
+          "goldenAnswer": "`Promise.allSettled(promises).then(results => results.forEach(r => { if(r.status==='fulfilled') use(r.value); else handleError(r.reason); }));` It lets you handle each outcome individually, avoiding a single rejection aborting the entire batch.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how to consume an async generator with `for await…of` and give an example of a function that yields values asynchronously. What are the benefits of this pattern?",
+          "goldenAnswer": "``async function* fetchPages() { let page=1; while(page<=5){ yield await fetch(`/api?page=${page}`).then(r=>r.json()); page++; } } for await(const data of fetchPages()){ process(data); }`` It streams data as it arrives, reducing memory usage and allowing back‑pressure handling.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how arrow functions handle `this` binding compared to regular functions, and give an example where this difference leads to a bug in a React component's event handler. Provide a solution.",
+          "goldenAnswer": "Arrow functions inherit `this` from the lexical scope, so in a React class component an arrow method automatically binds to the component instance. A regular function used as an event handler without explicit binding has `this` undefined (in strict mode), causing errors. Fix: define the handler as an arrow function or bind it in the constructor.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Describe how ES modules are loaded asynchronously in browsers, and explain the implications of using `import()` for code splitting in a large SPA. Include how circular dependencies are resolved.",
+          "goldenAnswer": "ES modules are fetched over HTTP and parsed asynchronously. `import()` returns a promise, enabling lazy loading of chunks and reducing initial bundle size. Circular dependencies are handled by creating module objects before executing code; modules see each other’s exports as live bindings, so circular imports work but may expose partially initialized exports.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Discuss optional chaining and nullish coalescing in complex data fetching scenarios. Provide an example where misuse of `||` instead of `??` leads to incorrect default values.",
+          "goldenAnswer": "Optional chaining (`?.`) safely accesses nested properties, returning undefined if any part is null/undefined. Nullish coalescing (`??`) returns the right side only when the left is null or undefined. Using `||` treats falsy values like 0 or '' as fallback, which can be wrong. Example: `const count = data?.count || 0;` will replace a legitimate 0 with 0, but `data?.count ?? 0` preserves 0.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Explain the difference between `let`, `const`, and `var` in block scoping, and how hoisting affects them. Provide an example of a closure that captures a loop variable incorrectly due to `var`, and show how to fix it with `let`.",
+          "goldenAnswer": "`var` is function-scoped and hoisted; `let`/`const` are block-scoped and not hoisted. A loop with `var` inside a closure captures the same variable, so all callbacks reference the last value. Example: `for (var i=0;i<3;i++) setTimeout(()=>console.log(i),100);` prints 3 three times. Fix: use `let i=0;` or an IIFE to create a new binding for each iteration.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "topic": "Algorithms",
+      "questions": [
+        {
+          "question": "How would you sort an array of numbers in ascending order using JavaScript's built‑in methods?",
+          "goldenAnswer": "Use array.sort((a,b)=>a-b) to sort numbers ascending.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Write a simple linear search function that returns the index of a target value in an array, or -1 if not found.",
+          "goldenAnswer": "Loop through the array, compare each element to the target, return the index when matched, otherwise return -1.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is the time complexity of adding or removing an element at the end of a JavaScript array using push() or pop()?",
+          "goldenAnswer": "O(1) amortized.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Implement a binary search algorithm for a sorted array of numbers. Return the index of the target or -1 if it doesn’t exist.",
+          "goldenAnswer": "Set low=0, high=array.length-1; while low<=high: mid=Math.floor((low+high)/2); if array[mid]===target return mid; else if array[mid] < target low=mid+1; else high=mid-1; return -1.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Describe a quick way to check if an array contains duplicate values.",
+          "goldenAnswer": "Create a Set, iterate the array, if a value is already in the Set return true; otherwise add it to the Set. If loop completes, return false.",
+          "difficulty": "easy"
+        },
+        {
+          "question": "Given an array of DOM elements with varying heights, write an algorithm to find the tallest element in O(n) time.",
+          "goldenAnswer": "Scan the array once, keep a variable for the maximum height, update it when a taller element is found. O(n) time, O(1) space.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "You need to implement a search‑as‑you‑type feature that filters a list of 10,000 items. Which algorithmic approach would you use to keep the UI responsive, and why?",
+          "goldenAnswer": "Use a debounce wrapper to limit filter calls and perform a linear scan of the array on each call. Debounce reduces the number of expensive operations, keeping the UI responsive. Complexity per call is O(n).",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Describe how you would implement a debounce function for an input field. What is its time complexity and how does it affect performance?",
+          "goldenAnswer": "Wrap the handler in a function that sets a timeout and clears any previous timeout. Each keystroke triggers O(1) work; the actual handler runs only after the user pauses, reducing unnecessary work.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "You have a list of user objects sorted by last login date. Write an algorithm to find the user who logged in the most recent day without scanning the entire list. What assumptions are needed?",
+          "goldenAnswer": "If the list is sorted descending by date, the first element is the most recent. If ascending, perform a binary search for the maximum date. Assumes the list is correctly sorted.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how you would use a binary search to find a specific item in a sorted array of product prices. Include edge cases.",
+          "goldenAnswer": "Set low=0, high=n-1. While low<=high, mid=(low+high)/2. Compare target to mid value; adjust bounds accordingly. Edge cases: target not found (return -1), duplicate values (return any index).",
+          "difficulty": "medium"
+        },
+        {
+          "question": "A component renders a list of items. When the list updates, you want to minimize re‑renders. Which algorithmic technique can help determine which items changed? Provide a brief explanation.",
+          "goldenAnswer": "Use a diffing algorithm that compares previous and next arrays by key. Compute a set of changed indices and only update those components. This is essentially a shallow comparison of immutable data.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "You need to merge two sorted arrays of CSS class names into a single sorted array without duplicates. What algorithm would you use and what is its time complexity?",
+          "goldenAnswer": "Use a two‑pointer merge: iterate both arrays, add the smaller element to result, skip duplicates. Time complexity O(n+m).",
+          "difficulty": "medium"
+        },
+        {
+          "question": "You are given a graph representing page navigation links. Write an algorithm to detect if there is a cycle that could cause infinite navigation loops. What is its complexity?",
+          "goldenAnswer": "Perform a depth‑first search keeping a recursion stack or use Kahn’s algorithm for topological sort. If a back‑edge or a node remains unprocessed, a cycle exists. Complexity O(V+E).",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Design an algorithm to efficiently find the k most frequent search suggestions from a large dictionary as the user types, minimizing latency and memory usage. Explain your approach and analyze its time and space complexity.",
+          "goldenAnswer": "Use a Trie where each node stores a min‑heap of the top k frequencies for the subtree. On each keystroke, traverse the Trie to the prefix node and return the heap. Insertion/update is O(L + k log k) per query, where L is prefix length; space is O(total nodes + k). This gives sub‑linear query time and bounded memory.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Implement a stable sorting algorithm that can sort an array of objects by multiple keys (e.g., age, then name) in a single pass, suitable for large datasets in the browser. Discuss its time complexity and how it preserves stability.",
+          "goldenAnswer": "Perform a radix‑style stable sort: start with the least significant key (name) using counting sort, then the next key (age). Each pass is O(n + R) where R is key range; overall O(n) for bounded key ranges. Counting sort is stable, so the final order respects all keys.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Explain how to design an algorithm that detects and removes duplicate DOM nodes generated by a virtual DOM diffing process, ensuring minimal reflows. What data structures and complexity considerations are involved?",
+          "goldenAnswer": "During diff, compute a hash signature of each node (tag, props, key). Store signatures in a hash map. If a signature already exists, skip rendering that node. This is O(n) time and O(n) space, and avoids unnecessary reflows by not creating duplicate nodes.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "You need to implement a real‑time search feature that supports wildcard queries (e.g., 'a?c*') over a dataset of 10 million strings. Describe an algorithm that can answer queries in sub‑linear time and explain its trade‑offs.",
+          "goldenAnswer": "Build a two‑level index: a forward trie for prefixes and a reverse trie for suffixes. For a pattern with a single wildcard segment, traverse the forward trie up to the first wildcard, then the reverse trie for the suffix, intersecting node sets. This gives O(p + q + output) time, sub‑linear for typical queries, but requires extra memory for two tries and intersection logic.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "topic": "Testing",
+      "questions": [
+        {
+          "question": "How do you write a simple Jest test for a function that adds two numbers?",
+          "goldenAnswer": "Use test('adds two numbers', () => { expect(add(1,2)).toBe(3); });",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How can you mock a module in Jest?",
+          "goldenAnswer": "Use jest.mock('moduleName', () => ({ function: jest.fn() }));",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you test a React component with Vitest and @testing-library/react?",
+          "goldenAnswer": "Render the component with render(<MyComponent />); then use screen.getByText('...'); expect(...).toBeInTheDocument();",
+          "difficulty": "easy"
+        },
+        {
+          "question": "What is the purpose of jest.spyOn and how do you use it?",
+          "goldenAnswer": "Create a spy on an object method: const spy = jest.spyOn(obj, 'method'); spy.mockReturnValue(...); expect(spy).toHaveBeenCalled();",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you write a test that ensures a function throws an error?",
+          "goldenAnswer": "Use expect(() => fn()).toThrow('error message');",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you mock a module that exports a function using Jest, and verify that the mock was called with specific arguments?",
+          "goldenAnswer": "Use jest.mock('modulePath', () => ({ exportedFn: jest.fn() })); then import the module, call the function that uses exportedFn, and assert with expect(exportedFn).toHaveBeenCalledWith(arg1, arg2).",
+          "difficulty": "medium"
+        },
+        {
+          "question": "When testing a React component that fetches data inside useEffect, how can you prevent real network calls and still test the component’s rendering logic?",
+          "goldenAnswer": "Mock the fetch (or axios) call with jest.spyOn(global, 'fetch').mockResolvedValueOnce({ json: async () => mockData }); render the component, wait for useEffect to run, and assert the UI updates based on mockData.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the purpose of jest.fn() in unit tests, and how can you use it to inspect callback invocations?",
+          "goldenAnswer": "jest.fn() creates a mock function that records calls. Pass it as a prop or callback, then use expect(mockFn).toHaveBeenCalledTimes(n) and expect(mockFn).toHaveBeenCalledWith(arg1, arg2) to verify invocation details.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you mock a global variable or function (e.g., window.localStorage) in Jest to isolate tests?",
+          "goldenAnswer": "Use jest.spyOn(global.window, 'localStorage', 'get').mockImplementation(() => mockStorage) or replace window.localStorage with a mock object before the test and restore it afterward.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain how to mock a dependency that returns a promise in Jest, and test a function that awaits that promise.",
+          "goldenAnswer": "jest.mock('dep', () => ({ asyncFunc: jest.fn().mockResolvedValue('value') })); call the function under test, await its result, and assert that asyncFunc was called and the returned value matches expectations.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "In Vitest, how do you mock a CSS module import in a component test to avoid style-related errors?",
+          "goldenAnswer": "Use vi.mock('*.module.css', () => ({})); before importing the component, so the CSS module resolves to an empty object and the component can render without style imports.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Describe a strategy to test that a component renders different UI based on a prop value, using snapshots and conditional rendering.",
+          "goldenAnswer": "Render the component twice with different prop values, capture snapshots with toMatchSnapshot(), and verify that the snapshots differ in the expected sections, ensuring conditional branches work.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How do you ensure test isolation when using global mocks, and what Jest hooks help reset them between tests?",
+          "goldenAnswer": "Use beforeEach(() => { jest.clearAllMocks(); jest.resetModules(); }) to reset mock state and module cache before each test, guaranteeing isolation.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How would you design a Jest mock for a module that uses dynamic imports and side effects, ensuring test isolation and avoiding global state leakage?",
+          "goldenAnswer": "Use `jest.mock` with a factory that returns a mock implementation, then call `jest.resetModules()` before each test to clear the module cache. For dynamic imports, use `jest.doMock` inside the test to replace the module at import time, and mock any side‑effectful functions with `jest.fn()` to keep state local.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Explain how to implement a TDD workflow for a React component that relies on a third‑party API, ensuring that tests remain deterministic and do not hit the network?",
+          "goldenAnswer": "Write the failing test first, mocking the API call with `jest.mock` or `vi.mock` and providing a resolved promise. Use `await waitFor` to handle async rendering, then implement the component to call the mocked API. Iterate until the test passes, keeping the mock isolated from real network.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "What strategies would you use to test a complex Redux selector that performs memoization and side‑effectful computations, and how would you mock the store state to isolate the selector logic?",
+          "goldenAnswer": "Test the selector by passing plain input objects, not the store, and use `reselect`'s `createSelector` to verify memoization by calling it twice with the same inputs and checking reference equality. Mock any external dependencies with `jest.mock` and reset them between tests to avoid cross‑test contamination.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Describe how to set up and use Vitest's snapshot testing for a component that renders differently based on window size, ensuring snapshots are stable across environments.",
+          "goldenAnswer": "Render the component inside a test that sets `global.innerWidth` to a fixed value and triggers a resize event, then use `expect(container).toMatchSnapshot()`. Reset the window size after each test and use a custom snapshot serializer if necessary to normalize environment‑specific values.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "topic": "Web APIs",
+      "questions": [
+        {
+          "question": "How do you fetch JSON data from an API endpoint using the Fetch API and handle errors?",
+          "goldenAnswer": "Use fetch(url).then(res=>{ if(!res.ok) throw new Error('Network response was not ok'); return res.json(); }).then(data=>{ /* use data */ }).catch(err=>{ console.error(err); });",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you store and retrieve a value in localStorage?",
+          "goldenAnswer": "localStorage.setItem('key', 'value'); const val = localStorage.getItem('key');",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you observe when an element enters the viewport using IntersectionObserver?",
+          "goldenAnswer": "const observer = new IntersectionObserver((entries)=>{ entries.forEach(entry=>{ if(entry.isIntersecting){ /* element visible */ } }); }); observer.observe(document.querySelector('#target'));",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you use the browser's Geolocation API to get the current position?",
+          "goldenAnswer": "navigator.geolocation.getCurrentPosition(position=>{ const {latitude, longitude} = position.coords; }, error=>{ console.error(error); });",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How do you clear all data from sessionStorage?",
+          "goldenAnswer": "sessionStorage.clear();",
+          "difficulty": "easy"
+        },
+        {
+          "question": "How can you implement a retry mechanism for failed fetch requests while avoiding infinite loops?",
+          "goldenAnswer": "Use a wrapper around fetch that tracks retry count, delays between attempts (e.g., exponential backoff), and stops after a maximum number of retries. Return the original error if all attempts fail.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What are the key differences between localStorage and sessionStorage, and when would you choose one over the other?",
+          "goldenAnswer": "localStorage persists data across browser sessions and tabs; sessionStorage is cleared when the tab/window closes. Use localStorage for long‑term data like user preferences, sessionStorage for data that should not survive a page reload, such as a single‑session token.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Describe how to use IntersectionObserver to lazy‑load images and what pitfalls to avoid.",
+          "goldenAnswer": "Create an observer with a rootMargin to preload before intersection, observe each image, and in the callback set the src when intersecting. Avoid observing too many elements at once; throttle the callback and disconnect observers when no longer needed.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can the Cache API be used to provide offline support in a PWA?",
+          "goldenAnswer": "During the install event, open a cache and add essential assets. In the fetch event, respond with cached responses first, falling back to network, and update the cache with new responses for future use.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "Explain the service worker update lifecycle and how to notify users of a new version.",
+          "goldenAnswer": "When a new SW is installed, it waits until all clients are closed. Use the 'waiting' state and postMessage to the page to prompt the user to refresh. Call skipWaiting() to activate immediately if desired.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How can you use the Permissions API to check if geolocation permission is granted before requesting location?",
+          "goldenAnswer": "Call navigator.permissions.query({name:'geolocation'}).then(result=>{ if(result.state==='granted') navigator.geolocation.getCurrentPosition(...); else if(result.state==='prompt') request permission; else handle denied state.});",
+          "difficulty": "medium"
+        },
+        {
+          "question": "What is the StorageManager API and how can it help manage storage quotas?",
+          "goldenAnswer": "navigator.storage.estimate() returns used and quota values. Use navigator.storage.persist() to request persistent storage, and handle quotaExceeded errors by prompting the user or cleaning up data.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How do you use the Fullscreen API to toggle fullscreen mode while respecting user gesture requirements?",
+          "goldenAnswer": "Call element.requestFullscreen() inside a user‑initiated event handler. To exit, call document.exitFullscreen(). Listen for fullscreenchange events to update UI accordingly.",
+          "difficulty": "medium"
+        },
+        {
+          "question": "How would you implement a robust retry mechanism for a fetch request that respects exponential backoff, request cancellation, and avoids memory leaks in a React component?",
+          "goldenAnswer": "Use AbortController to cancel on unmount, wrap fetch in a retry loop with exponential backoff (e.g., delay = base * 2^attempt), limit retries, and clear timers in cleanup. Store controller and timeout IDs in refs to avoid stale closures.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Explain how to design a client‑side caching layer using IndexedDB that synchronizes with a remote API, handles versioning, and gracefully degrades when storage quota is exceeded.",
+          "goldenAnswer": "Create an IndexedDB database with a versioned schema; use transactions to write/read; on sync, fetch fresh data and update DB; catch QUOTA_EXCEEDED_ERR and fall back to localStorage or in‑memory cache; use onupgradeneeded to migrate data between versions.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "Describe how to create a custom IntersectionObserver that supports multiple thresholds, root margins, and provides a debounced callback to avoid layout thrashing, while ensuring it works correctly across browsers that lack native support.",
+          "goldenAnswer": "Instantiate IntersectionObserver with thresholds array and rootMargin; wrap callback in requestAnimationFrame or debounce (e.g., 50ms) to batch updates; for legacy browsers, use a polyfill that mimics the API and falls back to polling with getBoundingClientRect.",
+          "difficulty": "hard"
+        },
+        {
+          "question": "What are the security implications of using the Web Crypto API to store encryption keys in localStorage, and how would you mitigate them while ensuring performance and usability?",
+          "goldenAnswer": "localStorage is not secure; keys can be read by any script on the domain. Instead, generate keys with SubtleCrypto, store them in IndexedDB with encryption, or use a secure key store like Web Crypto's KeyStorage; enforce HTTPS, use secure context, and avoid exposing raw key material.",
+          "difficulty": "hard"
+        }
+      ]
+    }
+  ]
+}

@@ -55,6 +55,38 @@ export class TopicsController {
         return this.topicsService.findOne(id)
     }
 
+    @Get(':id/difficulty-summary')
+    @ApiOperation({ summary: 'Get difficulty summary for a topic' })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns easy/medium/hard question counts for a topic',
+        schema: {
+            example: {
+                topicId: '123e4567-e89b-12d3-a456-426614174000',
+                topic: 'TypeScript',
+                counts: {
+                    easy: 5,
+                    medium: 8,
+                    hard: 4,
+                }
+            }
+        }
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Topic not found',
+        schema: {
+            example: {
+                statusCode: 404,
+                message: 'Topic with id 123e4567 not found',
+                error: 'Not Found'
+            }
+        }
+    })
+    getDifficultySummary(@Param('id', ParseUUIDPipe) id: string) {
+        return this.topicsService.getDifficultySummary(id)
+    }
+
     @Post()
     @ApiOperation({ summary: 'Create a topic' })
     @ApiBody({ type: CreateTopicDto })

@@ -1,0 +1,34 @@
+[
+  {
+    "title": "TypeScript",
+    "description": "Static typing, interfaces, generics and type safety in JS"
+  },
+  {
+    "title": "DOM Manipulation",
+    "description": "Querying, modify and traversing the document tree"
+  },
+  {
+    "title": "Async JavaScript",
+    "description": "Promises, async/await, event loop and microtasks"
+  },
+  {
+    "title": "Arrays and Objects",
+    "description": "Methods, destructuring, spread, and data transformation"
+  },
+  {
+    "title": "ES6+ Features",
+    "description": "Arrow functions, modules, optional chaining and more"
+  },
+  {
+    "title": "Algorithms",
+    "description": "Sorting, searching, complexity and problem-solving patterns"
+  },
+  {
+    "title": "Testing",
+    "description": "Unit tests, mocking, TDD with Jest or Vitest"
+  },
+  {
+    "title": "Web APIs",
+    "description": "Fetch, Storage, IntersectionObserver and browser APIs"
+  }
+]

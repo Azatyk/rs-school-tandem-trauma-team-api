@@ -15,13 +15,14 @@ export class QuestionsService {
     ) {}
 
     async findAll(dto: GetQuestionsDto): Promise<{ data: Question[], total: number, page: number, limit: number }> {
-        const { page = 1, limit = 10, search, topic_id } = dto;
+        const { page = 1, limit = 10, search, topic_id, difficulty } = dto;
 
 
         const [data, total] = await this.questionsRepository.findAndCount({
            where: {
                 ...(topic_id && { topic: { id: topic_id } }),
                 ...(search && { theoretical_question: ILike(`%${search}%`) }),
+                ...(difficulty && { difficulty }),
             },
             take: limit,
             skip: (page - 1) * limit,
