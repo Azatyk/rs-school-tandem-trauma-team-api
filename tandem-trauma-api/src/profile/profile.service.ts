@@ -9,12 +9,6 @@ import {
   ProfileSolvedBreakdown,
 } from './interfaces/profile.interfaces';
 
-const XP_BY_DIFFICULTY: Record<QuestionDifficulty, number> = {
-  [QuestionDifficulty.EASY]: 10,
-  [QuestionDifficulty.MEDIUM]: 25,
-  [QuestionDifficulty.HARD]: 50,
-};
-
 @Injectable()
 export class ProfileService {
   constructor(
@@ -65,24 +59,6 @@ export class ProfileService {
     }
 
     const totalSolvedTasks = solved.easy + solved.medium + solved.hard;
-    const xp =
-      solved.easy * XP_BY_DIFFICULTY[QuestionDifficulty.EASY] +
-      solved.medium * XP_BY_DIFFICULTY[QuestionDifficulty.MEDIUM] +
-      solved.hard * XP_BY_DIFFICULTY[QuestionDifficulty.HARD];
-
-    const recentActivity = await this.userAnswerRepository
-      .createQueryBuilder('ua')
-      .innerJoin('ua.question', 'q')
-      .select('q.id', 'taskId')
-      .addSelect('q.theoretical_question', 'title')
-      .addSelect('ua.evaluated_at', 'completedAt')
-      .where('ua.user_id = :userId', { userId })
-      .andWhere('ua.ai_score IS NOT NULL')
-      .andWhere('ua.ai_score >= :minScore', { minScore: 7.0 })
-      .andWhere('ua.evaluated_at IS NOT NULL')
-      .orderBy('ua.evaluated_at', 'DESC')
-      .limit(10)
-      .getRawMany<{ taskId: string; title: string; completedAt: Date }>();
 
     const topicRows = await this.userAnswerRepository
       .createQueryBuilder('ua')
@@ -123,7 +99,7 @@ export class ProfileService {
       name: user.name,
       email: user.email,
       memberSince: user.createdAt.toISOString(),
-      xp,
+
       stats: {
         currentStreak: user.currentStreak ?? 0,
         longestStreak: user.longestStreak ?? 0,

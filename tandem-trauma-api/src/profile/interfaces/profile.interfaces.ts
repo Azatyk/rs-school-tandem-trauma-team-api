@@ -14,7 +14,6 @@ export type ProfileResponse = {
   name: string;
   email: string;
   memberSince: string;
-  xp: number;
   stats: ProfileStats;
   difficultyBreakdown: ProfileSolvedBreakdown;
   topicMastery: Record<string, number>;
