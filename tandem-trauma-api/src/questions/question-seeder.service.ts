@@ -1,43 +1,109 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 import { Repository } from 'typeorm';
 
-import { AiService } from '../ai/ai.service';
+import {
+  GenerateQuestionsResult,
+  TopicInput,
+} from '../ai/interfaces/ai.interfaces';
 import { Topic } from '../topics/entities/topic.entity';
-import { Question } from './entities/question.entity';
-
-const JS_TOPICS = [
-  { title: 'Variables: var, let, const' },
-  { title: 'Data types and type coercion' },
-  { title: 'Functions and arrow functions' },
-  { title: 'Arrays and basic array methods (map, filter, find)' },
-  { title: 'Scope, hoisting, and closures' },
-  { title: 'this keyword and context binding' },
-  { title: 'Promises, async/await, and event loop basics' },
-  { title: 'Prototypal inheritance and prototype chain' },
-  { title: 'Debounce vs throttle, call stack, microtasks vs macrotasks' },
-  { title: 'Memory leaks, shallow vs deep copy, and performance optimization' },
-];
+import { Question, QuestionDifficulty } from './entities/question.entity';
 
 @Injectable()
 export class QuestionSeederService {
   constructor(
-    private readonly aiService: AiService,
     @InjectRepository(Topic)
     private readonly topicRepository: Repository<Topic>,
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
   ) {}
 
-  async generateAndSaveJsQuestions(questionsPerTopic = 5) {
-    const generated = await this.aiService.generateJsQuestions(
-      JS_TOPICS,
-      questionsPerTopic,
+  private normalizeDifficulty(value: string | undefined): QuestionDifficulty {
+    if (
+      value === QuestionDifficulty.EASY ||
+      value === QuestionDifficulty.MEDIUM ||
+      value === QuestionDifficulty.HARD
+    ) {
+      return value;
+    }
+
+    throw new Error(
+      'Question bank contains a question without a valid difficulty. Regenerate frontend-question-bank.json.',
     );
+  }
+
+  private getQuestionBankPath(): string {
+    return join(
+      process.cwd(),
+      'src',
+      'questions',
+      'data',
+      'frontend-question-bank.json',
+    );
+  }
+
+  private getTopicsPath(): string {
+    return join(
+      process.cwd(),
+      'src',
+      'questions',
+      'data',
+      'frontend-topics.json',
+    );
+  }
+
+  private async loadTopicsMetadata(): Promise<TopicInput[]> {
+    const content = await readFile(this.getTopicsPath(), 'utf-8');
+    const parsed = JSON.parse(content) as TopicInput[];
+
+    return parsed.filter(
+      (topic) => typeof topic?.title === 'string' && topic.title.trim(),
+    );
+  }
+
+  private async loadQuestionBank(): Promise<GenerateQuestionsResult | null> {
+    try {
+      const content = await readFile(this.getQuestionBankPath(), 'utf-8');
+      const parsed = JSON.parse(content) as GenerateQuestionsResult;
+
+      if (!parsed.language || !Array.isArray(parsed.topics)) {
+        return null;
+      }
+
+      const hasSeedableQuestions = parsed.topics.some(
+        (topic) => Array.isArray(topic.questions) && topic.questions.length > 0,
+      );
+
+      if (!hasSeedableQuestions) {
+        return null;
+      }
+
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  async generateAndSaveJsQuestions(questionsPerTopic = 5) {
+    const generated = await this.loadQuestionBank();
+    const topicsMetadata = await this.loadTopicsMetadata();
+
+    if (!generated) {
+      throw new Error(
+        'Question bank is missing or empty. Generate src/questions/data/frontend-question-bank.json before seeding.',
+      );
+    }
 
     for (const generatedTopic of generated.topics) {
       const topicTitle = String(generatedTopic.topic || '').trim();
       if (!topicTitle) continue;
+
+      const topicMetadata = topicsMetadata.find(
+        (topic) => topic.title.trim() === topicTitle,
+      );
+      const topicDescription = topicMetadata?.description?.trim() ?? null;
 
       let topic = await this.topicRepository.findOne({
         where: { title: topicTitle },
@@ -46,9 +112,12 @@ export class QuestionSeederService {
       if (!topic) {
         topic = this.topicRepository.create({
           title: topicTitle,
-          description: null,
+          description: topicDescription,
         });
 
+        topic = await this.topicRepository.save(topic);
+      } else if (topic.description !== topicDescription) {
+        topic.description = topicDescription;
         topic = await this.topicRepository.save(topic);
       }
 
@@ -74,6 +143,7 @@ export class QuestionSeederService {
         const question = this.questionRepository.create({
           theoretical_question: questionText,
           golden_answer: generatedQuestion.goldenAnswer,
+          difficulty: this.normalizeDifficulty(generatedQuestion.difficulty),
           topic,
         });
 
@@ -84,7 +154,7 @@ export class QuestionSeederService {
     return {
       success: true,
       language: generated.language,
-      questionsPerTopic: generated.questionsPerTopic,
+      questionsPerTopic: questionsPerTopic || generated.questionsPerTopic,
       topicsProcessed: generated.topics.length,
     };
   }

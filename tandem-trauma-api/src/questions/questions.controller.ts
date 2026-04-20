@@ -20,6 +20,7 @@ export class QuestionsController {
                 data: [{
                     id: '123e4567-e89b-12d3-a456-426614174000',
                     theoretical_question: 'What is event loop in JavaScript?',
+                    difficulty: 'medium',
                     topic: {
                         id: '123e4567-e89b-12d3-a456-426614174000',
                         title: 'JavaScript',
