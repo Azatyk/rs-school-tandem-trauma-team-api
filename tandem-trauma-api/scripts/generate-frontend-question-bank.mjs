@@ -87,10 +87,101 @@ function isJsonValidationFailure(error) {
 
 function describeError(error) {
   return (
+    error?.error?.error?.failed_generation ||
     error?.error?.error?.message ||
     error?.message ||
     'Unknown Groq error'
   );
+}
+
+function extractCompletionText(choice) {
+  const content = choice?.message?.content;
+
+  if (typeof content === 'string') {
+    return content.trim();
+  }
+
+  if (Array.isArray(content)) {
+    return content
+      .map((part) => {
+        if (typeof part === 'string') {
+          return part;
+        }
+
+        if (typeof part?.text === 'string') {
+          return part.text;
+        }
+
+        return '';
+      })
+      .join('')
+      .trim();
+  }
+
+  return '';
+}
+
+function extractJsonObject(content) {
+  const trimmed = String(content ?? '').trim();
+
+  if (!trimmed) {
+    throw new Error('AI returned an empty response.');
+  }
+
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    const firstBrace = trimmed.indexOf('{');
+    const lastBrace = trimmed.lastIndexOf('}');
+
+    if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+      throw new Error(`AI did not return valid JSON. Raw response: ${trimmed}`);
+    }
+
+    const candidate = trimmed.slice(firstBrace, lastBrace + 1);
+
+    try {
+      return JSON.parse(candidate);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown JSON parse error';
+
+      throw new Error(
+        `AI did not return valid JSON. ${message}. Raw response: ${candidate}`,
+      );
+    }
+  }
+}
+
+function normalizeQuestionsPayload(payload, expectedCount) {
+  const rawQuestions = Array.isArray(payload?.questions)
+    ? payload.questions
+    : Array.isArray(payload)
+      ? payload
+      : Array.isArray(payload?.items)
+        ? payload.items
+        : null;
+
+  if (!rawQuestions) {
+    throw new Error(
+      `AI returned JSON without a questions array. Payload: ${JSON.stringify(payload)}`,
+    );
+  }
+
+  const questions = rawQuestions
+    .map((item) => ({
+      question: String(item?.question ?? '').trim(),
+      goldenAnswer: String(item?.goldenAnswer ?? item?.answer ?? '').trim(),
+    }))
+    .filter((item) => item.question && item.goldenAnswer);
+
+  if (questions.length !== expectedCount) {
+    throw new Error(
+      `AI returned ${questions.length} valid questions, expected ${expectedCount}.`,
+    );
+  }
+
+  return questions;
 }
 
 async function generateTopicQuestions(topic, difficultyConfig) {
@@ -120,6 +211,13 @@ Hard constraints:
 - ${difficultyConfig.guidance}
 - For each question, provide a short but strong golden answer
 - goldenAnswer must not be empty
+- Return only a JSON object with a single "questions" array
+- Do not return the topic as an object, string, or any extra wrapper fields
+- Each item in "questions" must contain only "question" and "goldenAnswer"
+- Do not use markdown fences or explanatory text before or after the JSON
+- Keep every "goldenAnswer" as plain text only
+- Do not include code snippets, backticks, bullet lists, or unescaped line breaks inside JSON string values
+- Keep each "goldenAnswer" to 1-3 short sentences
 
 Topic:
 ${JSON.stringify(topic, null, 2)}
@@ -128,54 +226,26 @@ Difficulty:
 ${difficultyConfig.difficulty}`,
           },
         ],
-        response_format: {
-          type: 'json_schema',
-          json_schema: {
-            name: 'generate_topic_questions',
-            strict: true,
-            schema: {
-              type: 'object',
-              properties: {
-                topic: {
-                  type: 'string',
-                },
-                questions: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      question: {
-                        type: 'string',
-                      },
-                      goldenAnswer: {
-                        type: 'string',
-                      },
-                    },
-                    required: ['question', 'goldenAnswer'],
-                    additionalProperties: false,
-                  },
-                },
-              },
-              required: ['topic', 'questions'],
-              additionalProperties: false,
-            },
-          },
-        },
       });
 
-      const content = completion.choices[0]?.message?.content;
+      const choice = completion.choices[0];
+      const content = extractCompletionText(choice);
 
       if (!content) {
         throw new Error(
-          `Groq returned an empty response for topic "${topic.title}" at difficulty "${difficultyConfig.difficulty}".`,
+          `Groq returned an empty response for topic "${topic.title}" at difficulty "${difficultyConfig.difficulty}". Finish reason: ${String(choice?.finish_reason ?? 'unknown')}. Choice: ${JSON.stringify(choice)}`,
         );
       }
 
-      const parsed = JSON.parse(content);
+      const parsed = extractJsonObject(content);
+      const normalizedQuestions = normalizeQuestionsPayload(
+        parsed,
+        difficultyConfig.count,
+      );
 
       return {
-        topic: parsed.topic,
-        questions: parsed.questions.map((question) => ({
+        topic: topic.title,
+        questions: normalizedQuestions.map((question) => ({
           ...question,
           difficulty: difficultyConfig.difficulty,
         })),
@@ -183,7 +253,13 @@ ${difficultyConfig.difficulty}`,
     } catch (error) {
       const isRateLimited = error?.status === 429;
       const isSchemaFailure = isJsonValidationFailure(error);
-      const canRetry = isRateLimited || isSchemaFailure;
+      const isLocalJsonFailure =
+        error instanceof Error &&
+        (error.message.includes('empty response') ||
+          error.message.includes('valid JSON') ||
+          error.message.includes('questions array') ||
+          error.message.includes('expected'));
+      const canRetry = isRateLimited || isSchemaFailure || isLocalJsonFailure;
 
       if (!canRetry || attempt === maxRetries) {
         throw error;

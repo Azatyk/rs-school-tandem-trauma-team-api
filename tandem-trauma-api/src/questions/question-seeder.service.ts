@@ -86,7 +86,7 @@ export class QuestionSeederService {
     }
   }
 
-  async generateAndSaveJsQuestions(questionsPerTopic = 5) {
+  async generateAndSaveFrontendQuestions(questionsPerTopic = 5) {
     const generated = await this.loadQuestionBank();
     const topicsMetadata = await this.loadTopicsMetadata();
 

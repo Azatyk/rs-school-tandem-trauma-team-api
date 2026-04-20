@@ -35,7 +35,7 @@ export class AiService {
     return JSON.parse(content) as T;
   }
 
-  async generateJsQuestions(
+  async generateFrontendQuestions(
     topics: TopicInput[],
   questionsPerTopic = 5,
   ): Promise<GenerateQuestionsResult> {
