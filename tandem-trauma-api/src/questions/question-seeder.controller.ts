@@ -5,11 +5,11 @@ import { QuestionSeederService } from './question-seeder.service';
 export class QuestionSeederController {
   constructor(private readonly questionSeederService: QuestionSeederService) {}
 
-  @Post('js-questions')
-  async seedJsQuestions(@Query('perTopic') perTopic?: string) {
+  @Post('frontend-questions')
+  async seedFrontendQuestions(@Query('perTopic') perTopic?: string) {
     const questionsPerTopic = Number(perTopic) > 0 ? Number(perTopic) : 5;
 
-    return this.questionSeederService.generateAndSaveJsQuestions(
+    return this.questionSeederService.generateAndSaveFrontendQuestions(
       questionsPerTopic,
     );
   }
