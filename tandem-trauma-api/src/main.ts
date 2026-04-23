@@ -5,13 +5,9 @@ import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:4321')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
 
   app.enableCors({
-    origin: allowedOrigins,
+    origin: ['http://localhost:4321'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
@@ -33,6 +29,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(Number(process.env.PORT ?? 3000), '0.0.0.0');
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
