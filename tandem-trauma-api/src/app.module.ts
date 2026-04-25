@@ -29,6 +29,7 @@ import { ProfileModule } from './profile/profile.module';
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true,
+        ssl: config.get('DB_SSL') === 'true' ? { rejectUnauthorized: false } : false,
       }),
     }),
     AuthModule,
