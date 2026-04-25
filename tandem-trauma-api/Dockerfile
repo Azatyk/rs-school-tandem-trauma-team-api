@@ -8,8 +8,8 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build && echo "BUILD SUCCESS" && find dist/ -name "*.js" | head -20 || echo "BUILD FAILED - dist is empty"
+RUN npm run build
 
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["npm", "run", "start:prod"]
