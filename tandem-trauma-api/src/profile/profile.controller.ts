@@ -22,8 +22,7 @@ export class ProfileController {
   @Get()
   @ApiOperation({ summary: 'Get current user profile stats' })
   @ApiOkResponse({
-    description:
-      'Profile details with solved tasks breakdown successfully retrieved.',
+    description: 'Profile details with solved tasks breakdown successfully retrieved.',
     schema: {
       example: {
         name: 'John Doe',
@@ -35,13 +34,30 @@ export class ProfileController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized access. The JWT token is missing or invalid.',
-  })
-  @ApiNotFoundResponse({
-    description: 'User not found.',
-  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized access. The JWT token is missing or invalid.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
   getProfile(@CurrentUser('userId') userId: string): Promise<ProfileResponse> {
     return this.profileService.getProfile(userId);
+  }
+
+  @Get('matrix')
+  @ApiOperation({ summary: 'Get skill progress matrix by topic and difficulty' })
+  @ApiOkResponse({
+    description: 'Progress matrix retrieved successfully.',
+    schema: {
+      example: {
+        TypeScript: {
+          easy: { solved: 3, avgScore: 8.5 },
+          medium: { solved: 1, avgScore: 7.0 },
+        },
+        'DOM Manipulation': {
+          hard: { solved: 2, avgScore: 9.0 },
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized access.' })
+  getMatrix(@CurrentUser('userId') userId: string) {
+    return this.profileService.getProgressMatrix(userId);
   }
 }

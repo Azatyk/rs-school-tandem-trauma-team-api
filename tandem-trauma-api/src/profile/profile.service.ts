@@ -109,4 +109,32 @@ export class ProfileService {
       topicMastery,
     };
   }
+
+  async getProgressMatrix(userId: string) {
+    const rows = await this.userAnswerRepository
+      .createQueryBuilder('ua')
+      .innerJoin('ua.question', 'q')
+      .innerJoin('q.topic', 't')
+      .select('t.title', 'topic')
+      .addSelect('q.difficulty', 'difficulty')
+      .addSelect('COUNT(DISTINCT q.id)', 'solved')
+      .addSelect('AVG(ua.ai_score)', 'avgScore')
+      .where('ua.user_id = :userId', { userId })
+      .andWhere('ua.ai_score IS NOT NULL')
+      .groupBy('t.title')
+      .addGroupBy('q.difficulty')
+      .getRawMany();
+
+    const matrix: Record<string, Record<string, { solved: number; avgScore: number }>> = {};
+
+    for (const row of rows) {
+      if (!matrix[row.topic]) matrix[row.topic] = {};
+      matrix[row.topic][row.difficulty] = {
+        solved: parseInt(row.solved),
+        avgScore: Math.round(parseFloat(row.avgScore) * 10) / 10,
+      };
+    }
+
+    return matrix;
+  }
 }
