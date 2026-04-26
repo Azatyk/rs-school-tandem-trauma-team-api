@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Topic } from '../topics/entities/topic.entity';
 import { TopicsModule } from 'src/topics/topics.module';
+import { AiModule } from 'src/ai/ai.module';
 import { Question } from './entities/question.entity';
 import { QuestionSeederService } from './question-seeder.service';
 import { QuestionSeederController } from './question-seeder.controller';
@@ -13,6 +14,7 @@ import { QuestionsController } from './questions.controller';
   imports: [
     TypeOrmModule.forFeature([Topic, Question]),
     TopicsModule,
+    AiModule,
   ],
   controllers: [QuestionsController, QuestionSeederController],
   providers: [QuestionsService, QuestionSeederService],

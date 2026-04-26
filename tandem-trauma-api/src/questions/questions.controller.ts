@@ -135,4 +135,25 @@ export class QuestionsController {
         create(@Body() dto: CreateQuestionDto) {
         return this.questionsService.create(dto)
     }
+
+    @Get(':id/hint')
+    @ApiOperation({ summary: 'Get a hint for a question by level' })
+    @ApiQuery({
+      name: 'level',
+      required: false,
+      description: 'Hint level (1 = guiding question, 2 = partial direction, 3 = near-answer)',
+      enum: [1, 2, 3],
+      example: 1,
+    })
+    @ApiResponse({
+      status: 200,
+      schema: { example: { hint: 'Think about how TypeScript uses type guards...' } },
+    })
+    getHint(
+      @Param('id', ParseUUIDPipe) id: string,
+      @Query('level') level: string,
+    ) {
+      const hintLevel = (Number(level) || 1) as 1 | 2 | 3;
+      return this.questionsService.getHint(id, hintLevel);
+    }
 }

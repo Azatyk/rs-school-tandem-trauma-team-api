@@ -5,6 +5,7 @@ import { Repository, ILike } from 'typeorm';
 import { GetQuestionsDto } from './dto/get-questions.dto';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { TopicsService } from 'src/topics/topics.service';
+import { AiService } from 'src/ai/ai.service';
 
 @Injectable()
 export class QuestionsService {
@@ -12,6 +13,7 @@ export class QuestionsService {
         @InjectRepository(Question)
         private readonly questionsRepository: Repository<Question>,
         private readonly topicsService: TopicsService,
+        private readonly aiService: AiService,
     ) {}
 
     async findAll(dto: GetQuestionsDto): Promise<{ data: Question[], total: number, page: number, limit: number }> {
@@ -31,24 +33,29 @@ export class QuestionsService {
         return { data, total, page, limit };
     }
 
+    async getHint(id: string, level: 1 | 2 | 3) {
+      const question = await this.findOne(id);
+      return this.aiService.generateHint(question.theoretical_question, level);
+    }
+
     async findOne(id: string): Promise<Question> {
 
-        const question = await this.questionsRepository.findOne({ where: { id }})
+      const question = await this.questionsRepository.findOne({ where: { id }})
 
-        if (!question) {
+      if (!question) {
             throw new NotFoundException(`Question with id ${id} not found`)
         }
 
-        return question;
+      return question;
     }
 
     async create(dto: CreateQuestionDto): Promise<Question> {
-        await this.topicsService.findOne(dto.topic_id);
-        const question = this.questionsRepository.create({
-            theoretical_question: dto.theoretical_question,
-            golden_answer: dto.golden_answer,
-            topic: { id: dto.topic_id }
+      await this.topicsService.findOne(dto.topic_id);
+      const question = this.questionsRepository.create({
+          theoretical_question: dto.theoretical_question,
+          golden_answer: dto.golden_answer,
+          topic: { id: dto.topic_id }
         });
-        return this.questionsRepository.save(question);
+      return this.questionsRepository.save(question);
     }
 }

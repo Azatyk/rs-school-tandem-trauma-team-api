@@ -35,6 +35,50 @@ export class AiService {
     return JSON.parse(content) as T;
   }
 
+  async generateHint(
+    question: string,
+    level: 1 | 2 | 3,
+  ): Promise<{ hint: string }> {
+    const levelPrompts = {
+      1: 'Give a guiding question that helps the user think in the right direction. Do NOT reveal the answer.',
+      2: 'Give a partial direction pointing to the key concept. Do NOT reveal the full answer.',
+      3: 'Give a near-answer hint that strongly guides the user without giving the full answer.',
+    };
+
+    const completion = await this.client.chat.completions.create({
+      model: this.model,
+      temperature: 0.3,
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful mentor. Give hints to guide the user without revealing the answer directly.',
+        },
+        {
+          role: 'user',
+          content: `Question: ${question}\n\nHint level ${level}: ${levelPrompts[level]}`,
+        },
+      ],
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: 'generate_hint',
+          strict: true,
+          schema: {
+            type: 'object',
+            properties: {
+              hint: { type: 'string' },
+            },
+            required: ['hint'],
+            additionalProperties: false,
+          },
+        },
+      },
+    });
+
+    const text = completion.choices[0]?.message?.content;
+    return this.parseJsonResponse<{ hint: string }>(text);
+  }
+
   async generateFrontendQuestions(
     topics: TopicInput[],
   questionsPerTopic = 5,
