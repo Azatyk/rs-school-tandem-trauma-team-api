@@ -54,12 +54,13 @@ export class CodingTaskSeederService {
      } catch (error) {
        console.error(`Failed to generate tasks for topic ${topic.title}:`, error);
        continue;
-    }
+     }
 
-    return {
-      success: true,
-      topicsProcessed: topics.length,
-      totalTasksCreated,
-    };
-  }
+     return {
+       success: true,
+       topicsProcessed: topics.length,
+       totalTasksCreated,
+     };
+   }
+ }
 }
