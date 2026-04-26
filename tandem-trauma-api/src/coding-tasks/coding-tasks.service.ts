@@ -92,20 +92,41 @@ export class CodingTasksService {
   await this.dataSource.transaction(async (manager) => {
     const userRepo = manager.getRepository(User);
     const user = await userRepo.findOne({
-      where: { id: userId },
-      lock: { mode: 'pessimistic_write' },
+        where: { id: userId },
+        lock: { mode: 'pessimistic_write' },
     });
 
     if (!user) throw new NotFoundException('User not found');
 
     user.xp = (user.xp ?? 0) + xpEarned;
+
+    const today = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const yesterday = new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1),
+    )
+        .toISOString()
+        .slice(0, 10);
+
+    if (user.lastActiveDate !== today) {
+        if (user.lastActiveDate === yesterday) {
+        user.currentStreak = (user.currentStreak ?? 0) + 1;
+        } else {
+        user.currentStreak = 1;
+        }
+        if (user.currentStreak > (user.longestStreak ?? 0)) {
+        user.longestStreak = user.currentStreak;
+        }
+        user.lastActiveDate = today;
+    }
+
     await userRepo.save(user);
-  });
 
-  return {
-    xpEarned,
-    message: `Task passed! You earned ${xpEarned} XP.`,
-  };
-}
+    });
 
+    return {
+        xpEarned,
+        message: 'Task passed! XP awarded.'
+    };
+  }
 }
