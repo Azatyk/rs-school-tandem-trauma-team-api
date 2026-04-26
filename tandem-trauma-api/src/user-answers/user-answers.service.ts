@@ -8,6 +8,7 @@ import { CreateUserAnswerDto } from './dto/create-user-answer.dto';
 import { QuestionsService } from 'src/questions/questions.service';
 import { DataSource } from 'typeorm';
 import { User } from 'src/users/user.entity';
+import { EvaluateAnswerResult } from 'src/ai/interfaces/ai.interfaces';
 
 @Injectable()
 export class UserAnswersService {
@@ -62,8 +63,7 @@ export class UserAnswersService {
 
     const savedAnswer = await this.userAnswersRepository.save(answer);
 
-    let evaluation: { score: number; feedback: object; advice: string } | null =
-      null;
+    let evaluation: EvaluateAnswerResult | null = null;
 
     try {
       evaluation = await this.aiService.evaluateAnswer(
@@ -101,6 +101,7 @@ export class UserAnswersService {
       ua.ai_score = evaluation.score;
       ua.ai_feedback = evaluation.feedback;
       ua.ai_advice = evaluation.advice;
+      ua.ai_rubrics = evaluation.rubrics;
       ua.status = AnswerStatus.SUCCESS;
       ua.evaluated_at = evaluatedAt;
 

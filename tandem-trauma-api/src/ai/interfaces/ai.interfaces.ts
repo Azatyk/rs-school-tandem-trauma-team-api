@@ -27,8 +27,15 @@ export type EvaluationFeedback = {
   accuracy: string;
 };
 
+export type RubricCriterion = {
+  criterion: string;
+  passed: boolean;
+  comment: string;
+};
+
 export type EvaluateAnswerResult = {
   score: number;
   feedback: EvaluationFeedback;
   advice: string;
+  rubrics: RubricCriterion[];
 };

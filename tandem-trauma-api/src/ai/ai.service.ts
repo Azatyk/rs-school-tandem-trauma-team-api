@@ -188,8 +188,7 @@ ${JSON.stringify(topics, null, 2)}`,
       messages: [
         {
           role: 'system',
-          content:
-            'You are an expert technical interviewer. Evaluate answers fairly, accurately, and return only schema-compliant structured output.',
+          content: 'You are an expert technical interviewer. Evaluate answers fairly, accurately, and return only schema-compliant structured output. Always include rubric criteria relevant to the question.',
         },
         {
           role: 'user',
@@ -207,7 +206,14 @@ Scoring rules:
 - 3-5 means partially correct, shallow, or noticeably incomplete
 - 1-2 means largely incorrect
 - 0 means empty, irrelevant, or completely wrong
-- If the answer is described as excellent, perfect, exceptionally accurate, or having no significant weaknesses, the score should be 9 or 10, not 5`,
+- If the answer is described as excellent, perfect, exceptionally accurate, or having no significant weaknesses, the score should be 9 or 10, not 5
+
+Also evaluate against these rubric criteria relevant to the question:
+- Correctness: Is the core concept correct?
+- Completeness: Are all important aspects covered?
+- Clarity: Is the explanation clear and well-structured?
+- Examples: Does the answer include relevant examples?
+- Depth: Does the answer show deep understanding?`,
         },
       ],
       response_format: {
@@ -242,8 +248,21 @@ Scoring rules:
               advice: {
                 type: 'string',
               },
+              rubrics: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    criterion: { type: 'string' },
+                    passed: { type: 'boolean' },
+                    comment: { type: 'string' },
+                  },
+                  required: ['criterion', 'passed', 'comment'],
+                  additionalProperties: false,
+                },
+              },
             },
-            required: ['score', 'feedback', 'advice'],
+            required: ['score', 'feedback', 'advice', 'rubrics'],
             additionalProperties: false,
           },
         },

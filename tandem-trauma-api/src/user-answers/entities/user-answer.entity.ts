@@ -21,7 +21,18 @@ export class UserAnswer extends BaseEntity {
     ai_score!: number | null;
 
     @Column({ type: 'json', nullable: true })
-    ai_feedback!: object | null;
+    ai_feedback!: {
+      strengths: string;
+      weaknesses: string;
+      accuracy: string;
+    } | null;
+
+    @Column({ type: 'json', nullable: true })
+      ai_rubrics!: {
+      criterion: string;
+      passed: boolean;
+      comment: string;
+    }[] | null;
 
     @Column({ type: 'text', nullable: true })
     ai_advice!: string | null;
