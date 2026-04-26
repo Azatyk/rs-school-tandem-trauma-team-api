@@ -28,6 +28,9 @@ export class User extends BaseEntity {
   @Column({ name: 'xp', type: 'int', default: 0 })
   xp!: number;
 
+  @Column({ name: 'avatar_url', type: 'text', nullable: true })
+  avatarUrl!: string | null;
+
   @OneToMany(() => UserAnswer, (userAnswer) => userAnswer.user)
   userAnswers!: UserAnswer[];
 }

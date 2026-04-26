@@ -6,11 +6,11 @@ import { UserAnswer } from 'src/user-answers/entities/user-answer.entity';
 import { User } from 'src/users/user.entity';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
+import { AvatarService } from './avatar.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, UserAnswer, Question]), AuthModule],
   controllers: [ProfileController],
-  providers: [ProfileService],
+  providers: [ProfileService, AvatarService],
 })
 export class ProfileModule {}
-

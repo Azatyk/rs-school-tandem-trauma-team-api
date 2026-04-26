@@ -30,6 +30,7 @@ export class ProfileService {
         'longestStreak',
         'lastActiveDate',
         'xp',
+        'avatarUrl',
       ],
     });
 
@@ -100,6 +101,7 @@ export class ProfileService {
       name: user.name,
       email: user.email,
       memberSince: user.createdAt.toISOString(),
+      avatarUrl: user.avatarUrl ?? null,
 
       stats: {
         currentStreak: user.currentStreak ?? 0,

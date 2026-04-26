@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -6,18 +6,25 @@ import {
   ApiOkResponse,
   ApiUnauthorizedResponse,
   ApiNotFoundResponse,
+  ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ProfileService } from './profile.service';
 import { ProfileResponse } from './interfaces/profile.interfaces';
+import { AvatarService } from './avatar.service';
 
 @ApiBearerAuth()
 @ApiTags('profile')
 @Controller('profile')
 @UseGuards(JwtAuthGuard)
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly avatarService: AvatarService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get current user profile stats' })
@@ -60,4 +67,22 @@ export class ProfileController {
   getMatrix(@CurrentUser('userId') userId: string) {
     return this.profileService.getProgressMatrix(userId);
   }
-}
+  @Post('avatar')
+  @ApiOperation({ summary: 'Upload profile avatar' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+    uploadAvatar(
+      @CurrentUser('userId') userId: string,
+      @UploadedFile() file: Express.Multer.File,
+    ) {
+      return this.avatarService.uploadAvatar(userId, file);
+    }
+  }

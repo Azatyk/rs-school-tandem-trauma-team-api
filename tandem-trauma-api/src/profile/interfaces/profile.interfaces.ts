@@ -15,6 +15,7 @@ export type ProfileResponse = {
   name: string;
   email: string;
   memberSince: string;
+  avatarUrl: string | null;
   stats: ProfileStats;
   difficultyBreakdown: ProfileSolvedBreakdown;
   topicMastery: Record<string, number>;
