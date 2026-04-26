@@ -22,9 +22,11 @@ export class User extends BaseEntity {
   @Column({ name: 'longest_streak', type: 'int', default: 0 })
   longestStreak!: number;
 
-  // Stored as DATE to avoid timezone edge cases.
   @Column({ name: 'last_active_date', type: 'date', nullable: true })
   lastActiveDate!: string | null;
+
+  @Column({ name: 'xp', type: 'int', default: 0 })
+  xp!: number;
 
   @OneToMany(() => UserAnswer, (userAnswer) => userAnswer.user)
   userAnswers!: UserAnswer[];

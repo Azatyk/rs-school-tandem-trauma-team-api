@@ -177,6 +177,47 @@ ${JSON.stringify(topics, null, 2)}`,
     }
   }
 
+  async explainCodingError(
+    taskTitle: string,
+    taskDescription: string,
+    userCode: string,
+    error: string,
+  ): Promise<{ explanation: string; suggestion: string }> {
+    const completion = await this.client.chat.completions.create({
+      model: this.model,
+      temperature: 0.3,
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a senior coding mentor. Explain errors in simple human language and suggest fixes.',
+        },
+        {
+          role: 'user',
+          content: `Task: ${taskTitle}\nDescription: ${taskDescription}\n\nUser code:\n${userCode}\n\nError:\n${error}\n\nExplain the error in simple terms and suggest how to fix it.`,
+        },
+      ],
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: 'explain_error',
+          strict: true,
+          schema: {
+            type: 'object',
+            properties: {
+              explanation: { type: 'string' },
+              suggestion: { type: 'string' },
+            },
+            required: ['explanation', 'suggestion'],
+            additionalProperties: false,
+          },
+        },
+      },
+    });
+
+    const text = completion.choices[0]?.message?.content;
+    return this.parseJsonResponse<{ explanation: string; suggestion: string }>(text);
+  }
+
   async evaluateAnswer(
     question: string,
     goldenAnswer: string,

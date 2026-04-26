@@ -8,6 +8,7 @@ import { QuestionsModule } from './questions/questions.module';
 import { AiModule } from './ai/ai.module';
 import { UserAnswersModule } from './user-answers/user-answers.module';
 import { ProfileModule } from './profile/profile.module';
+import { CodingTasksModule } from './coding-tasks/coding-tasks.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ProfileModule } from './profile/profile.module';
     AiModule,
     UserAnswersModule,
     ProfileModule,
+    CodingTasksModule,
   ],
   controllers: [AppController],
 })
