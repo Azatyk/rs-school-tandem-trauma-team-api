@@ -25,10 +25,11 @@ export class CodingTaskSeederService {
     let totalTasksCreated = 0;
 
     for (const topic of topics) {
-      const generated = await this.aiService.generateCodingTasks(
-        { title: topic.title, description: topic.description ?? undefined },
-        tasksPerTopic,
-      );
+     try {
+        const generated = await this.aiService.generateCodingTasks(
+          { title: topic.title, description: topic.description ?? undefined },
+          tasksPerTopic,
+        );
 
       for (const task of generated.tasks) {
         const existing = await this.codingTaskRepository.findOne({
@@ -50,6 +51,9 @@ export class CodingTaskSeederService {
         await this.codingTaskRepository.save(codingTask);
         totalTasksCreated++;
       }
+     } catch (error) {
+       console.error(`Failed to generate tasks for topic ${topic.title}:`, error);
+       continue;
     }
 
     return {

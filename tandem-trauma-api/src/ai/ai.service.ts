@@ -233,16 +233,15 @@ ${JSON.stringify(topics, null, 2)}`,
         },
         {
           role: 'user',
-          content: `Generate ${tasksPerTopic} coding tasks for the topic: "${topic.title}".
-  ${topic.description ? `Topic description: ${topic.description}` : ''}
+          content: `Generate exactly ${tasksPerTopic} JavaScript coding tasks for the topic: "${topic.title}".
+        ${topic.description ? `Topic description: ${topic.description}` : ''}
 
-  Requirements:
-  - Tasks must be solvable in JavaScript, TypeScript
-  - Each task must have a clear function signature in starter code
-  - Solution code must be correct and pass all test cases
-  - Test cases must have simple string inputs and expected outputs
-  - Mix of easy, medium, and hard difficulties
-  - Tasks should be practical and relevant to frontend interviews`,
+        Rules:
+        - Each task must have a working JavaScript function as starter code and solution
+        - Each task must have exactly 3 test cases
+        - Test cases use simple string representations
+        - Mix difficulties: easy, medium, hard
+        - Tasks must be relevant to frontend interviews`,
         },
       ],
       response_format: {
@@ -263,7 +262,7 @@ ${JSON.stringify(topics, null, 2)}`,
                     description: { type: 'string' },
                     starterCode: { type: 'string' },
                     solutionCode: { type: 'string' },
-                    difficulty: { type: 'string', enum: ['easy', 'medium', 'hard'] },
+                    difficulty: { type: 'string' },
                     testCases: {
                       type: 'array',
                       items: {
