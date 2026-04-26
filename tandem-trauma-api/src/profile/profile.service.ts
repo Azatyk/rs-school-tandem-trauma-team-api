@@ -29,6 +29,7 @@ export class ProfileService {
         'currentStreak',
         'longestStreak',
         'lastActiveDate',
+        'xp',
       ],
     });
 
@@ -104,6 +105,7 @@ export class ProfileService {
         currentStreak: user.currentStreak ?? 0,
         longestStreak: user.longestStreak ?? 0,
         totalSolvedTasks,
+        xp: user.xp ?? 0,
       },
       difficultyBreakdown: solved,
       topicMastery,

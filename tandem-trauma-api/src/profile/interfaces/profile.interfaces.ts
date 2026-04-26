@@ -8,6 +8,7 @@ export type ProfileStats = {
   currentStreak: number;
   longestStreak: number;
   totalSolvedTasks: number;
+  xp: number;
 };
 
 export type ProfileResponse = {
