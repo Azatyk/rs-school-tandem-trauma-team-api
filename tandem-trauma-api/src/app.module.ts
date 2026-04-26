@@ -9,6 +9,7 @@ import { AiModule } from './ai/ai.module';
 import { UserAnswersModule } from './user-answers/user-answers.module';
 import { ProfileModule } from './profile/profile.module';
 import { CodingTasksModule } from './coding-tasks/coding-tasks.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CodingTasksModule } from './coding-tasks/coding-tasks.module';
     UserAnswersModule,
     ProfileModule,
     CodingTasksModule,
+    UsersModule,
   ],
   controllers: [AppController],
 })
