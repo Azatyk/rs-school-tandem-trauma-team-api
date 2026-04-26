@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import Groq from 'groq-sdk';
 import {
   EvaluateAnswerResult,
+  GenerateCodingTasksResult,
   GenerateQuestionsResult,
   TopicInput,
 } from './interfaces/ai.interfaces';
@@ -216,6 +217,81 @@ ${JSON.stringify(topics, null, 2)}`,
 
     const text = completion.choices[0]?.message?.content;
     return this.parseJsonResponse<{ explanation: string; suggestion: string }>(text);
+  }
+
+  async generateCodingTasks(
+    topic: TopicInput,
+    tasksPerTopic = 3,
+  ): Promise<GenerateCodingTasksResult> {
+    const completion = await this.client.chat.completions.create({
+      model: this.model,
+      temperature: 0.3,
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a senior frontend engineer creating coding challenges for interview preparation. Generate practical JavaScript coding tasks with clear descriptions, starter code, solution code, and test cases.',
+        },
+        {
+          role: 'user',
+          content: `Generate ${tasksPerTopic} coding tasks for the topic: "${topic.title}".
+  ${topic.description ? `Topic description: ${topic.description}` : ''}
+
+  Requirements:
+  - Tasks must be solvable in JavaScript, TypeScript
+  - Each task must have a clear function signature in starter code
+  - Solution code must be correct and pass all test cases
+  - Test cases must have simple string inputs and expected outputs
+  - Mix of easy, medium, and hard difficulties
+  - Tasks should be practical and relevant to frontend interviews`,
+        },
+      ],
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: 'generate_coding_tasks',
+          strict: true,
+          schema: {
+            type: 'object',
+            properties: {
+              topic: { type: 'string' },
+              tasks: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    title: { type: 'string' },
+                    description: { type: 'string' },
+                    starterCode: { type: 'string' },
+                    solutionCode: { type: 'string' },
+                    difficulty: { type: 'string', enum: ['easy', 'medium', 'hard'] },
+                    testCases: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          input: { type: 'string' },
+                          expected: { type: 'string' },
+                          description: { type: 'string' },
+                        },
+                        required: ['input', 'expected', 'description'],
+                        additionalProperties: false,
+                      },
+                    },
+                  },
+                  required: ['title', 'description', 'starterCode', 'solutionCode', 'difficulty', 'testCases'],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ['topic', 'tasks'],
+            additionalProperties: false,
+          },
+        },
+      },
+    });
+
+    const text = completion.choices[0]?.message?.content;
+    return this.parseJsonResponse<GenerateCodingTasksResult>(text);
   }
 
   async evaluateAnswer(

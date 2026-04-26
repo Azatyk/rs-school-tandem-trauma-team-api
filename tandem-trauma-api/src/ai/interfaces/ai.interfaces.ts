@@ -39,3 +39,21 @@ export type EvaluateAnswerResult = {
   advice: string;
   rubrics: RubricCriterion[];
 };
+
+export type GeneratedCodingTask = {
+  title: string;
+  description: string;
+  starterCode: string;
+  solutionCode: string;
+  testCases: {
+    input: string;
+    expected: string;
+    description: string;
+  }[];
+  difficulty: 'easy' | 'medium' | 'hard';
+};
+
+export type GenerateCodingTasksResult = {
+  topic: string;
+  tasks: GeneratedCodingTask[];
+};
