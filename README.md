@@ -60,6 +60,7 @@ Swagger: https://rs-school-tandem-trauma-team-api.onrender.com/api/docs
 ## 🗂 Доска задач
 
 Ссылка: [Asana](https://app.asana.com/1/1205378151870243/project/1213558284510777/list/1213558315453510)
+
 Состояние на утро 28.04:
 
 <img width="1919" height="1040" alt="image" src="https://github.com/user-attachments/assets/f1be0e01-1d8b-4d51-8783-5b94b8988b56" />
