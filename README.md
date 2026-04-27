@@ -43,9 +43,9 @@ Swagger: https://rs-school-tandem-trauma-team-api.onrender.com/api/docs
 
 | Роль | Участник |
 |------|----------|
-| Backend Developer | [Meir]([https://github.com/username](https://github.com/Anuarbekov)) |
-| Backend Developer | [Batyrkhan]([https://github.com/username](https://github.com/Batyrkhan-Sk)) |
-| Frontend Developer | [Alex]([https://github.com/username](https://github.com/devenrgy)) |
+| Backend Developer | [Meir](https://github.com/Anuarbekov) |
+| Backend Developer | [Batyrkhan](https://github.com/Batyrkhan-Sk) |
+| Frontend Developer | [Alex](https://github.com/devenrgy) |
 
 ## 🎓 Ментор
 
