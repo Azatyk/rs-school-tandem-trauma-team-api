@@ -49,7 +49,7 @@ Swagger: https://rs-school-tandem-trauma-team-api.onrender.com/api/docs
 
 ## 🎓 Ментор
 
-[Азат]([https://github.com/username](https://github.com/Azatyk))
+[Азат](https://github.com/Azatyk)
 
 ## 🏆 Лучшие PR
 
