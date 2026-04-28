@@ -10,7 +10,7 @@ Niro - веб-приложение для подготовки к техниче
 
 ## 📹 Видео презентация приложения
 
-Ссылка на видео: 
+Ссылка на видео: https://drive.google.com/file/d/1i4R3X1Q0JZgXnYzNrpFAc7gFW2Tllcye/view?usp=sharing
 
 ## 🚀 Деплой
 
