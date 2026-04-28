@@ -1,0 +1,1 @@
+Видео презентация ai service модуля: https://drive.google.com/file/d/1zNYBBw48j_cnu7wN0MmPO3LDGZBMUh50/view?usp=sharing
